@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Home, MessageCircle, Orbit, Phone, UserCircle, Search, WalletCards, Bell, ArrowLeft, ChevronRight, BellRing, Languages, Share2, FileText, LogIn, Heart, Sun, Grid2X2, CircleDot, SlidersHorizontal, Star, Send, Video, Menu as MenuIcon } from 'lucide-react';
+import { Hop as Home, MessageCircle, Orbit, Phone, CircleUser as UserCircle, Search, WalletCards, Bell, ArrowLeft, ChevronRight, BellRing, Languages, Share2, FileText, LogIn, Heart, Sun, Grid2x2X as Grid2X2, CircleDot, SlidersHorizontal, Star, Send, Video, Menu as MenuIcon } from 'lucide-react';
 import './styles.css';
 
 const portrait = 'https://images.pexels.com/photos/17040892/pexels-photo-17040892.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
