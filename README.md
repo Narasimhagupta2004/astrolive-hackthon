@@ -1,1 +1,1 @@
-# astrolive-hackthon
+# AstroLive mobile recreation
