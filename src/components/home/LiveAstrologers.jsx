@@ -1,9 +1,9 @@
-import { screenshotAssets } from '../../data/appData';
+import { uiAssets } from '../../data/appData';
 
 const liveAstrologers = [
-  { name: 'Shree', image: screenshotAssets.home },
-  { name: 'Tarot V...', image: screenshotAssets.homeAlt },
-  { name: 'Pooja', image: screenshotAssets.chat }
+  { name: 'Shree', image: uiAssets.live1 },
+  { name: 'Tarot V...', image: uiAssets.live2 },
+  { name: 'Pooja', image: uiAssets.live3 }
 ];
 
 export function LiveAstrologers({ onViewAll }) {
