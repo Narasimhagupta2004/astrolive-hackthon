@@ -1,7 +1,8 @@
 import { ArrowLeft, Search, WalletCards, Bell } from 'lucide-react';
 import { AstroLiveLogo } from '../common/AstroLiveLogo';
+import { CartBadge } from '../shop/CartBadge';
 
-export function AppHeader({ variant = 'home', title, onBack }) {
+export function AppHeader({ variant = 'home', title, onBack, showCart = false, onCart }) {
   if (variant === 'back') {
     return (
       <header className="app-header back-header">
@@ -15,7 +16,7 @@ export function AppHeader({ variant = 'home', title, onBack }) {
       <AstroLiveLogo />
       <nav className="header-actions">
         <button className="icon-btn" aria-label="Search"><Search size={21} /></button>
-        <button className="icon-btn" aria-label="Wallet"><WalletCards size={21} /></button>
+        {showCart ? <CartBadge onClick={onCart} /> : <button className="icon-btn" aria-label="Wallet"><WalletCards size={21} /></button>}
         <button className="icon-btn" aria-label="Notifications"><Bell size={21} /></button>
       </nav>
     </header>

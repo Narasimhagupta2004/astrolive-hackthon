@@ -1,10 +1,10 @@
-import { Hop as Home, MessageCircle, Orbit, Phone, CircleUser as UserCircle } from 'lucide-react';
+import { Hop as Home, MessageCircle, Orbit, ShoppingBag, CircleUser as UserCircle } from 'lucide-react';
 
 const items = [
   { id: 'home', label: 'Home', Icon: Home },
   { id: 'chat', label: 'Chat', Icon: MessageCircle },
   { id: 'hub', label: 'AstroHub', Icon: Orbit },
-  { id: 'call', label: 'Call', Icon: Phone },
+  { id: 'shubh-kart', label: 'Shubh Kart', Icon: ShoppingBag },
   { id: 'menu', label: 'Menu', Icon: UserCircle }
 ];
 

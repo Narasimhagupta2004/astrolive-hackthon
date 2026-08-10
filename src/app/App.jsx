@@ -3,6 +3,11 @@ import { HomePage } from '../pages/HomePage';
 import { ChatPage } from '../pages/ChatPage';
 import { AstroHubPage } from '../pages/AstroHubPage';
 import { SettingsPage } from '../pages/SettingsPage';
+import { ShubhKartPage } from '../pages/ShubhKartPage';
+import { CartPage } from '../pages/CartPage';
+import { AddressPage } from '../pages/AddressPage';
+import { OrderConfirmPage } from '../pages/OrderConfirmPage';
+import { CartProvider } from '../state/CartContext';
 
 export function App() {
   const [route, setRoute] = useState('home');
@@ -13,8 +18,15 @@ export function App() {
     return () => window.removeEventListener('astro:return-home', returnHome);
   }, []);
 
-  if (route === 'chat') return <ChatPage onNavigate={setRoute} />;
-  if (route === 'hub') return <AstroHubPage onNavigate={setRoute} />;
-  if (route === 'settings') return <SettingsPage onNavigate={setRoute} />;
-  return <HomePage onNavigate={setRoute} />;
+  let page;
+  if (route === 'chat') page = <ChatPage onNavigate={setRoute} />;
+  else if (route === 'hub') page = <AstroHubPage onNavigate={setRoute} />;
+  else if (route === 'settings') page = <SettingsPage onNavigate={setRoute} />;
+  else if (route === 'shubh-kart') page = <ShubhKartPage onNavigate={setRoute} />;
+  else if (route === 'cart') page = <CartPage onNavigate={setRoute} />;
+  else if (route === 'address') page = <AddressPage onNavigate={setRoute} />;
+  else if (route === 'confirm') page = <OrderConfirmPage onNavigate={setRoute} />;
+  else page = <HomePage onNavigate={setRoute} />;
+
+  return <CartProvider>{page}</CartProvider>;
 }

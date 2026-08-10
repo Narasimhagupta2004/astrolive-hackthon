@@ -1,10 +1,10 @@
-import { MessageCircle, Phone } from 'lucide-react';
+import { MessageCircle, ShoppingBag } from 'lucide-react';
 
-export function QuickActions({ onChat, onCall }) {
+export function QuickActions({ onChat, onShop }) {
   return (
     <div className="quick-actions">
       <button onClick={onChat}><MessageCircle size={18} /> Chat</button>
-      <button onClick={onCall}><Phone size={18} /> Call</button>
+      <button onClick={onShop}><ShoppingBag size={18} /> Shop</button>
     </div>
   );
 }
