@@ -61,6 +61,37 @@ export const astrologers = [
   }
 ];
 
+const user1 = 'https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const user2 = 'https://images.pexels.com/photos/3763152/pexels-photo-3763152.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const user3 = 'https://images.pexels.com/photos/2726111/pexels-photo-2726111.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const user4 = 'https://images.pexels.com/photos/1499327/pexels-photo-1499327.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const user5 = 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+
+export const MAX_CONNECTS = 3;
+
+export const connectedUsers = [
+  {
+    id: 'usr-01', name: 'Priya Menon', image: user1, rashi: 'mesha',
+    lastMode: 'chat', lastAtMinsAgo: 45, isOnline: true, consultations: 4
+  },
+  {
+    id: 'usr-02', name: 'Rohan Desai', image: user2, rashi: 'vrishabha',
+    lastMode: 'call', lastAtMinsAgo: 180, isOnline: true, consultations: 2
+  },
+  {
+    id: 'usr-03', name: 'Meera Iyer', image: user3, rashi: 'kanya',
+    lastMode: 'chat', lastAtMinsAgo: 1440, isOnline: false, consultations: 7
+  },
+  {
+    id: 'usr-04', name: 'Arjun Nair', image: user4, rashi: 'simha',
+    lastMode: 'chat', lastAtMinsAgo: 2880, isOnline: false, consultations: 1
+  },
+  {
+    id: 'usr-05', name: 'Kavya Reddy', image: user5, rashi: 'tula',
+    lastMode: 'call', lastAtMinsAgo: 4320, isOnline: true, consultations: 3
+  }
+];
+
 export const tools = [
   { title: 'Love Calculator', icon: 'heart', image: stars },
   { title: 'Daily Horoscope', icon: 'sun', image: tarot },
