@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Wallet, MapPin, CheckCircle2, Home, CalendarClock, Sparkles } from 'lucide-react';
+import { MapPin, CheckCircle2, Home, CalendarClock, Sparkles, ShieldCheck, Lock } from 'lucide-react';
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
 import { useCart } from '../state/CartContext';
 import { freeGift } from '../data/appData';
+import { openCheckout, isConfigured } from '../utils/razorpay';
 
 const dayLabels = {
   any: 'Any day (fastest)',
@@ -26,33 +27,58 @@ function estimateDelivery(day) {
 export function OrderConfirmPage({ onNavigate }) {
   const { items, subtotal, address, placeOrder, deliveryDay, giftUnlocked } = useCart();
   const [placed, setPlaced] = useState(null);
+  const [paying, setPaying] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handlePlace = () => {
-    const paidAmount = subtotal;
+  const handlePay = async () => {
+    if (subtotal <= 0) return;
+    setError(null);
+    setPaying(true);
+    const amount = subtotal;
     const eta = estimateDelivery(deliveryDay);
-    const id = placeOrder();
-    setPlaced({ id, amount: paidAmount, eta });
+    const provisionalOrderId = 'SK-' + Date.now().toString(36).toUpperCase();
+    try {
+      const { paymentId } = await openCheckout({
+        amount,
+        orderId: provisionalOrderId,
+        prefill: { name: address.name, phone: address.phone }
+      });
+      placeOrder(); // clears cart; we already have amount/eta captured
+      setPlaced({ id: provisionalOrderId, amount, eta, paymentId });
+    } catch (err) {
+      setError(err?.message || 'Payment could not be completed');
+    } finally {
+      setPaying(false);
+    }
   };
 
   if (placed) {
     return (
       <div className="app-screen">
-        <AppHeader variant="back" title="Order Placed" onBack={() => onNavigate('shubh-kart')} />
+        <AppHeader variant="back" title="Payment Successful" onBack={() => onNavigate('shubh-kart')} />
         <main className="confirm-main">
-          <div className="order-success">
-            <div className="success-icon-wrap"><CheckCircle2 size={64} /></div>
-            <h2>Order Placed!</h2>
-            <p>Your order <strong>{placed.id}</strong> has been booked.</p>
-            <div className="success-eta">
-              <CalendarClock size={16} /> Estimated delivery: <strong>{placed.eta}</strong>
+          <div className="order-success payment-success">
+            <div className="confetti" aria-hidden>
+              {Array.from({ length: 18 }).map((_, i) => <i key={i} style={{ '--i': i }} />)}
             </div>
-            <p className="hint">Pay <strong>₹{placed.amount}</strong> in cash when it arrives at your door.</p>
+            <div className="success-icon-wrap"><CheckCircle2 size={64} /></div>
+            <h2>Payment Successful!</h2>
+            <p>Thank you, <strong>{address?.name?.split(' ')[0] || 'friend'}</strong> — your order is confirmed.</p>
+
+            <div className="pay-receipt">
+              <div className="row"><span>Amount paid</span><strong>₹{placed.amount}</strong></div>
+              <div className="row"><span>Order ID</span><strong>{placed.id}</strong></div>
+              <div className="row"><span>Payment ID</span><strong className="mono">{placed.paymentId}</strong></div>
+              <div className="row"><span>Estimated delivery</span><strong>{placed.eta}</strong></div>
+            </div>
+
             <p className="mantra-line"><Sparkles size={12} /> Aarti mantra & prasad blessing sent to your phone.</p>
+
             <div className="success-actions">
               <button className="primary-btn" onClick={() => onNavigate('shubh-kart')}>Back to Shop</button>
               <button className="ghost-btn" onClick={() => onNavigate('home')}><Home size={16} /> Home</button>
             </div>
-            <small className="powered">Powered by Shubh Kart</small>
+            <small className="powered">Powered by Shubh Kart · Secured by Razorpay</small>
           </div>
         </main>
         <BottomNav active="shubh-kart" onNavigate={onNavigate} />
@@ -106,18 +132,29 @@ export function OrderConfirmPage({ onNavigate }) {
 
         <section className="confirm-card">
           <header>Payment Method</header>
-          <label className="pay-method-card selected">
-            <input type="radio" name="pay" checked readOnly />
-            <Wallet size={22} />
-            <div>
-              <b>Cash on Delivery</b>
-              <span>Pay ₹{subtotal} in cash when your order arrives.</span>
+          <div className="rzp-card">
+            <div className="rzp-brand">
+              <div className="rzp-logo">R</div>
+              <div>
+                <b>Razorpay Secure Checkout</b>
+                <span>UPI · Cards · Netbanking · Wallets</span>
+              </div>
+              <div className="rzp-badge"><ShieldCheck size={14} /> Secure</div>
             </div>
-          </label>
-          <p className="pay-soon">More payment methods (UPI · Cards · Wallets) coming soon 🚀</p>
+            <div className="rzp-methods">
+              <span>UPI</span><span>VISA</span><span>Mastercard</span><span>RuPay</span><span>Netbanking</span><span>Paytm</span>
+            </div>
+          </div>
+          {!isConfigured() && (
+            <p className="pay-warn">⚠️ Add your Razorpay Test Key ID in <code>src/config/razorpay.js</code> before paying.</p>
+          )}
+          {error && <p className="pay-warn">⚠️ {error}</p>}
         </section>
 
-        <button className="primary-btn full" onClick={handlePlace}>Place Order</button>
+        <button className="primary-btn full pay-btn" onClick={handlePay} disabled={paying || !isConfigured()}>
+          <Lock size={14} /> {paying ? 'Opening secure checkout…' : `Pay ₹${subtotal} Securely`}
+        </button>
+        <p className="pay-footnote">You'll be redirected to Razorpay's secure payment window.</p>
       </main>
       <BottomNav active="shubh-kart" onNavigate={onNavigate} />
     </div>
