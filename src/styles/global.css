@@ -55,16 +55,16 @@ body {
 
 .back-header {
   justify-content: flex-start;
-  gap: 15px;
-  height: 166px;
-  align-items: flex-start;
-  padding-top: 55px;
-  background: linear-gradient(120deg, #8e00e9, #6500ba);
-  border-radius: 0 0 42px 42px;
+  gap: 12px;
+  height: 74px;
+  align-items: center;
+  padding-top: 0;
+  background: linear-gradient(112deg, var(--purple-bright), var(--purple-deep));
+  border-radius: 0;
 }
 
 .back-header h1 {
-  font: 700 24px 'Outfit';
+  font: 700 18px 'Outfit';
   margin: 0;
 }
 
@@ -1521,6 +1521,53 @@ body {
 
 /* ─── Razorpay payment UI ─────────────────────────── */
 
+/* Selectable payment method cards (radio-based) */
+.method-card {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 3px;
+  border: 2px solid transparent;
+  margin-bottom: 10px;
+  transition: border-color .15s, background .15s;
+}
+.method-card > input[type="radio"] {
+  align-self: center;
+  margin: 0 0 0 10px;
+  accent-color: var(--purple);
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+.method-card .method-body { flex: 1; }
+.method-card.selected { border-color: var(--purple); background: #f8f0ff; }
+
+.method-card.cod .cod-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #ead9f5;
+  position: relative;
+}
+.method-card.cod svg { color: var(--purple); flex: 0 0 auto; }
+.method-card.cod b { display: block; font: 600 14px 'Outfit'; color: var(--ink); }
+.method-card.cod .cod-body span { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.method-card.cod .cod-body > div:not(.cod-badge) { flex: 1; }
+.method-card.cod .cod-badge {
+  background: #f3ebfb;
+  color: var(--purple);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
+  letter-spacing: .3px;
+}
+
 .rzp-card {
   background: linear-gradient(120deg, #0f2b57, #1c3a75);
   color: #fff;
@@ -1627,7 +1674,8 @@ body {
 }
 
 /* Payment success receipt */
-.payment-success .pay-receipt {
+.payment-success .pay-receipt,
+.payment-failed .pay-receipt {
   width: 100%;
   max-width: 320px;
   background: #faf7fd;
@@ -1636,7 +1684,8 @@ body {
   margin: 12px 0 8px;
   text-align: left;
 }
-.payment-success .pay-receipt .row {
+.payment-success .pay-receipt .row,
+.payment-failed .pay-receipt .row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -1644,15 +1693,51 @@ body {
   font-size: 12px;
   color: #4b4650;
   border-bottom: 1px dashed #e2dde4;
+  gap: 12px;
 }
-.payment-success .pay-receipt .row:last-child { border-bottom: 0; }
-.payment-success .pay-receipt strong { color: var(--ink); font-size: 13px; }
-.payment-success .pay-receipt strong.mono {
+.payment-success .pay-receipt .row:last-child,
+.payment-failed .pay-receipt .row:last-child { border-bottom: 0; }
+.payment-success .pay-receipt strong,
+.payment-failed .pay-receipt strong { color: var(--ink); font-size: 13px; text-align: right; }
+.payment-success .pay-receipt strong.mono,
+.payment-failed .pay-receipt strong.mono {
   font-family: 'Outfit', monospace;
   font-size: 11px;
   color: var(--purple-deep);
   word-break: break-all;
   text-align: right;
+}
+
+/* Payment failed screen */
+.payment-failed .fail-icon-wrap {
+  animation: fail-shake .55s cubic-bezier(.36,.07,.19,.97);
+  display: inline-flex;
+  padding: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffecec, transparent 70%);
+}
+.payment-failed .fail-icon-wrap svg { color: #e02f4d; }
+.payment-failed h2 { color: #c92a48; }
+.payment-failed .pay-receipt strong.reason {
+  color: #c92a48;
+  font-size: 12px;
+  text-align: right;
+  word-break: break-word;
+}
+.payment-failed .fail-hint {
+  background: #fff8e0;
+  border: 1px dashed #f0d475;
+  color: #6a5000;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin: 12px 0 4px;
+  max-width: 320px;
+}
+@keyframes fail-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+  20%, 40%, 60%, 80% { transform: translateX(6px); }
 }
 
 /* Confetti animation */

@@ -7,6 +7,7 @@ import { useCart } from '../state/CartContext';
 const fields = [
   { name: 'name', label: 'Full name', placeholder: 'e.g. Naveen Karri', type: 'text' },
   { name: 'phone', label: 'Phone number', placeholder: '10-digit mobile', type: 'tel', maxLength: 10 },
+  { name: 'email', label: 'Email', placeholder: 'name@example.com', type: 'email' },
   { name: 'pincode', label: 'Pincode', placeholder: '6-digit pincode', type: 'tel', maxLength: 6 },
   { name: 'city', label: 'City', placeholder: 'e.g. Hyderabad', type: 'text' },
   { name: 'addressLine', label: 'Address', placeholder: 'House / street / landmark', type: 'text', textarea: true }
@@ -22,9 +23,10 @@ const deliveryDays = [
 
 export function AddressPage({ onNavigate }) {
   const { address, setAddress, count, deliveryDay, setDeliveryDay } = useCart();
-  const [form, setForm] = useState(address || { name: '', phone: '', pincode: '', city: '', addressLine: '' });
+  const [form, setForm] = useState(address || { name: '', phone: '', email: '', pincode: '', city: '', addressLine: '' });
 
-  const isValid = form.name.trim() && /^\d{10}$/.test(form.phone) && /^\d{6}$/.test(form.pincode) && form.city.trim() && form.addressLine.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+  const isValid = form.name.trim() && /^\d{10}$/.test(form.phone) && emailOk && /^\d{6}$/.test(form.pincode) && form.city.trim() && form.addressLine.trim();
 
   const submit = (e) => {
     e.preventDefault();
