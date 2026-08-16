@@ -15,11 +15,50 @@ export const uiAssets = {
   toolBg5: stars
 };
 
-export const advisors = [
-  { name: 'Kridhа', experience: '5Yrs', languages: 'English · Hindi', price: '₹12/min', oldPrice: '₹15/min', image: portrait },
-  { name: 'Sanyogita', experience: '3Yrs', languages: 'Hindi · Rajasthani · English', price: '₹20/min', oldPrice: '₹25/min', image: portrait2, badge: 'Top Choice', orders: '(22.8k Orders)' },
-  { name: 'Tashu', experience: '5Yrs', languages: 'Hindi', price: '₹14/min', oldPrice: '₹18/min', image: portrait },
-  { name: 'Madhuri', experience: '10Yrs', languages: 'Hindi · English', price: '₹18/min', oldPrice: '₹22/min', image: portrait2 }
+const astro1 = 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro2 = 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro3 = 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro4 = 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro5 = 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro6 = 'https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+
+export const astrologers = [
+  {
+    id: 'as-01', name: 'Kridha', image: astro1,
+    skills: ['Vedic', 'Tarot'], languages: ['English', 'Hindi'],
+    ratePerMin: 12, oldRatePerMin: 15, rating: 4.8, orders: 22800,
+    experienceYears: 5, isOnline: true, isLive: true, tag: 'Top Choice'
+  },
+  {
+    id: 'as-02', name: 'Sanyogita', image: astro2,
+    skills: ['Numerology'], languages: ['Hindi', 'Rajasthani', 'English'],
+    ratePerMin: 20, oldRatePerMin: 25, rating: 4.9, orders: 31400,
+    experienceYears: 3, isOnline: true, isLive: false
+  },
+  {
+    id: 'as-03', name: 'Tashu', image: astro3,
+    skills: ['Tarot'], languages: ['Hindi'],
+    ratePerMin: 14, oldRatePerMin: 18, rating: 4.6, orders: 9200,
+    experienceYears: 5, isOnline: true, isLive: true
+  },
+  {
+    id: 'as-04', name: 'Madhuri', image: astro4,
+    skills: ['Vedic', 'Palmistry'], languages: ['Hindi', 'English'],
+    ratePerMin: 18, oldRatePerMin: 22, rating: 4.7, orders: 15600,
+    experienceYears: 10, isOnline: false, isLive: false
+  },
+  {
+    id: 'as-05', name: 'Devansh', image: astro5,
+    skills: ['Vastu', 'Vedic'], languages: ['English', 'Gujarati'],
+    ratePerMin: 25, oldRatePerMin: 30, rating: 4.9, orders: 44100,
+    experienceYears: 12, isOnline: true, isLive: true, tag: 'Celebrity'
+  },
+  {
+    id: 'as-06', name: 'Ananya', image: astro6,
+    skills: ['Numerology', 'Tarot'], languages: ['English', 'Bengali'],
+    ratePerMin: 10, oldRatePerMin: 14, rating: 4.5, orders: 6800,
+    experienceYears: 2, isOnline: true, isLive: false
+  }
 ];
 
 export const tools = [
