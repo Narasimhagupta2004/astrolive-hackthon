@@ -17,7 +17,7 @@ export function HomePage({ onNavigate }) {
         <HeroBanner />
         <div className="carousel-dots"><i /><i /><i /></div>
         <LiveAstrologers onViewAll={() => onNavigate('chat')} />
-        <FreeToolsSection onViewAll={() => onNavigate('hub')} />
+        <FreeToolsSection onViewAll={() => onNavigate('hub')} onNavigate={onNavigate} />
         <QuickActions onChat={() => onNavigate('chat')} onShop={() => onNavigate('shubh-kart')} />
       </main>
       <BottomNav active="home" onNavigate={onNavigate} />
