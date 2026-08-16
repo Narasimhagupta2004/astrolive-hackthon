@@ -8,12 +8,19 @@ import { RashiPicker } from '../components/shop/RashiPicker';
 import { IntentChips } from '../components/shop/IntentChips';
 import { shubhKartProducts, featuredCollection } from '../data/appData';
 import { useCart } from '../state/CartContext';
+import { useSession } from '../state/SessionContext';
 
 const categories = ['Sacred Items', 'Pooja & Remedies'];
 
 export function ShubhKartPage({ onNavigate }) {
   const { count, subtotal, intent, rashi } = useCart();
+  const { viewProduct } = useSession();
   const [activeProduct, setActiveProduct] = useState(null);
+
+  const openProduct = (product) => {
+    setActiveProduct(product);
+    viewProduct(product);
+  };
 
   const matches = (p) => intent === 'all' || (p.intents && p.intents.includes(intent));
   const filtered = shubhKartProducts.filter(matches);
@@ -53,7 +60,7 @@ export function ShubhKartPage({ onNavigate }) {
           </div>
           <div className="fc-strip">
             {featuredProducts.map((p) => (
-              <button key={p.id} className="fc-tile" onClick={() => setActiveProduct(p)} style={{ backgroundImage: `url(${p.image})` }}>
+              <button key={p.id} className="fc-tile" onClick={() => openProduct(p)} style={{ backgroundImage: `url(${p.image})` }}>
                 <span>{p.name}</span>
               </button>
             ))}
@@ -71,7 +78,7 @@ export function ShubhKartPage({ onNavigate }) {
               </div>
               <div className="product-grid">
                 {inCat.map((p) => (
-                  <ProductCard key={p.id} product={p} onOpen={setActiveProduct} />
+                  <ProductCard key={p.id} product={p} onOpen={openProduct} />
                 ))}
               </div>
             </section>

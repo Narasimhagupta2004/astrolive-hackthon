@@ -189,9 +189,12 @@ body {
   display: flex;
   gap: 16px;
   align-items: center;
-  overflow: hidden;
+  overflow-x: auto;
+  scrollbar-width: none;
   margin-bottom: 26px;
 }
+
+.live-section::-webkit-scrollbar { display: none; }
 
 .live-person {
   width: 62px;
@@ -1678,4 +1681,168 @@ body {
   0%   { opacity: 0; transform: translate(0, -10px) rotate(0deg); }
   15%  { opacity: 1; }
   100% { opacity: 0; transform: translate(calc((var(--i) - 9) * 6px), 220px) rotate(720deg); }
+}
+
+/* Resume */
+
+.resume-section { margin: 16px 0 22px; }
+
+.resume-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.resume-card:last-child { margin-bottom: 0; }
+
+.resume-avatar {
+  position: relative;
+  flex: 0 0 48px;
+  height: 48px;
+}
+
+.resume-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.resume-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resume-info strong {
+  font: 600 15px 'Outfit';
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.resume-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.resume-action {
+  flex: 0 0 auto;
+  background: var(--purple);
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.resume-avatar.cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f3ebfb;
+  color: var(--purple);
+}
+
+/* Recently Viewed */
+
+.recent-section { margin-bottom: 22px; }
+
+.recent-rail {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+.recent-rail::-webkit-scrollbar { display: none; }
+
+.recent-card {
+  flex: 0 0 116px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  background: #fff;
+  border: 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 8px 8px 10px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.recent-pic {
+  position: relative;
+  width: 100%;
+  height: 84px;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 5px;
+}
+
+.recent-tag {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: var(--gold);
+  color: #3a2400;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: .3px;
+}
+
+.recent-name {
+  font: 600 12.5px/1.25 'Outfit';
+  color: var(--ink);
+  max-width: 100%;
+  min-height: 31px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recent-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffb000;
+}
+
+.recent-price {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.recent-price s {
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 4px;
 }

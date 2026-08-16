@@ -8,6 +8,7 @@ import { CartPage } from '../pages/CartPage';
 import { AddressPage } from '../pages/AddressPage';
 import { OrderConfirmPage } from '../pages/OrderConfirmPage';
 import { CartProvider } from '../state/CartContext';
+import { SessionProvider } from '../state/SessionContext';
 
 export function App() {
   const [route, setRoute] = useState('home');
@@ -28,5 +29,5 @@ export function App() {
   else if (route === 'confirm') page = <OrderConfirmPage onNavigate={setRoute} />;
   else page = <HomePage onNavigate={setRoute} />;
 
-  return <CartProvider>{page}</CartProvider>;
+  return <CartProvider><SessionProvider>{page}</SessionProvider></CartProvider>;
 }
