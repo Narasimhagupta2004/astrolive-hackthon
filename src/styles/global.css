@@ -1846,3 +1846,150 @@ body {
   font-weight: 400;
   margin-left: 4px;
 }
+
+/* Connected Users */
+
+.cu-main { padding: 20px 16px; }
+
+.cu-card {
+  display: flex;
+  gap: 12px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.cu-pic {
+  position: relative;
+  flex: 0 0 58px;
+  height: 58px;
+}
+
+.cu-pic img {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cu-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cu-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cu-title-row h3 {
+  font: 600 16px 'Outfit';
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cu-rashi {
+  flex: 0 0 auto;
+  font-size: 10px;
+  background: #f3ebfb;
+  color: var(--purple);
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+
+.cu-status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 3px 0 0;
+}
+
+.cu-meta {
+  font-size: 11px;
+  color: #999;
+  margin: 2px 0 0;
+}
+
+.cu-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.cu-quota {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.cu-connect {
+  flex: 0 0 auto;
+  background: var(--purple);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.cu-connect:disabled {
+  background: #ece7ef;
+  color: #a49fa8;
+  cursor: not-allowed;
+}
+
+.cu-sheet-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+
+.cu-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: #faf7fd;
+  border: 1px solid #e8dcef;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cu-action-icon {
+  flex: 0 0 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cu-action b {
+  display: block;
+  font: 600 14px 'Outfit';
+  color: var(--ink);
+}
+
+.cu-action small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
