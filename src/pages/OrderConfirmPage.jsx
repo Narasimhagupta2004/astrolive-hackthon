@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, CheckCircle2, Home, CalendarClock, Sparkles, ShieldCheck, Lock } from 'lucide-react';
+import { MapPin, CheckCircle2, XCircle, Home, CalendarClock, Sparkles, ShieldCheck, Lock, Wallet, ShoppingBag, RotateCcw, CreditCard } from 'lucide-react';
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
 import { useCart } from '../state/CartContext';
@@ -27,58 +27,113 @@ function estimateDelivery(day) {
 export function OrderConfirmPage({ onNavigate }) {
   const { items, subtotal, address, placeOrder, deliveryDay, giftUnlocked } = useCart();
   const [placed, setPlaced] = useState(null);
+  const [failed, setFailed] = useState(null);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState(null);
+  const [method, setMethod] = useState('razorpay');
 
-  const handlePay = async () => {
+  const handleSubmit = async () => {
     if (subtotal <= 0) return;
     setError(null);
-    setPaying(true);
+    setFailed(null);
     const amount = subtotal;
     const eta = estimateDelivery(deliveryDay);
     const provisionalOrderId = 'SK-' + Date.now().toString(36).toUpperCase();
+
+    if (method === 'cod') {
+      placeOrder();
+      setPlaced({ id: provisionalOrderId, amount, eta, paymentId: null, method: 'cod' });
+      return;
+    }
+
+    setPaying(true);
     try {
       const { paymentId } = await openCheckout({
         amount,
         orderId: provisionalOrderId,
-        prefill: { name: address.name, phone: address.phone }
+        prefill: { name: address.name, phone: address.phone, email: address.email }
       });
-      placeOrder(); // clears cart; we already have amount/eta captured
-      setPlaced({ id: provisionalOrderId, amount, eta, paymentId });
+      placeOrder();
+      setPlaced({ id: provisionalOrderId, amount, eta, paymentId, method: 'razorpay' });
     } catch (err) {
-      setError(err?.message || 'Payment could not be completed');
+      setFailed({
+        id: provisionalOrderId,
+        amount,
+        reason: err?.message || 'Payment could not be completed',
+        cancelled: err?.code === 'dismissed'
+      });
     } finally {
       setPaying(false);
     }
   };
 
-  if (placed) {
+  if (failed) {
     return (
       <div className="app-screen">
-        <AppHeader variant="back" title="Payment Successful" onBack={() => onNavigate('shubh-kart')} />
+        <AppHeader variant="back" title="Payment Failed" onBack={() => setFailed(null)} />
+        <main className="confirm-main">
+          <div className="order-success payment-failed">
+            <div className="fail-icon-wrap"><XCircle size={64} /></div>
+            <h2>{failed.cancelled ? 'Payment Cancelled' : 'Payment Failed'}</h2>
+            <p>{failed.cancelled
+              ? 'You closed the payment window before completing.'
+              : 'We couldn\'t process your payment. Your card was not charged.'}</p>
+
+            <div className="pay-receipt">
+              <div className="row"><span>Reason</span><strong className="reason">{failed.reason}</strong></div>
+              <div className="row"><span>Attempted amount</span><strong>₹{failed.amount}</strong></div>
+              <div className="row"><span>Order reference</span><strong>{failed.id}</strong></div>
+            </div>
+
+            <p className="fail-hint">💡 Your items are still safe in the cart — nothing was ordered yet.</p>
+
+            <div className="success-actions">
+              <button className="primary-btn" onClick={() => { setFailed(null); handleSubmit(); }}>
+                <RotateCcw size={16} /> Try Again
+              </button>
+              <button className="ghost-btn" onClick={() => { setFailed(null); setMethod('cod'); }}>
+                <CreditCard size={16} /> Change Method
+              </button>
+            </div>
+            <small className="powered">Powered by AstroLive · Secured by Razorpay</small>
+          </div>
+        </main>
+        <BottomNav active="shubh-kart" onNavigate={onNavigate} />
+      </div>
+    );
+  }
+
+  if (placed) {
+    const paidByCard = placed.method === 'razorpay';
+    return (
+      <div className="app-screen">
+        <AppHeader variant="back" title={paidByCard ? 'Payment Successful' : 'Order Placed'} onBack={() => onNavigate('shubh-kart')} />
         <main className="confirm-main">
           <div className="order-success payment-success">
             <div className="confetti" aria-hidden>
               {Array.from({ length: 18 }).map((_, i) => <i key={i} style={{ '--i': i }} />)}
             </div>
             <div className="success-icon-wrap"><CheckCircle2 size={64} /></div>
-            <h2>Payment Successful!</h2>
+            <h2>{paidByCard ? 'Payment Successful!' : 'Order Placed!'}</h2>
             <p>Thank you, <strong>{address?.name?.split(' ')[0] || 'friend'}</strong> — your order is confirmed.</p>
 
             <div className="pay-receipt">
-              <div className="row"><span>Amount paid</span><strong>₹{placed.amount}</strong></div>
+              <div className="row"><span>{paidByCard ? 'Amount paid' : 'Amount due on delivery'}</span><strong>₹{placed.amount}</strong></div>
               <div className="row"><span>Order ID</span><strong>{placed.id}</strong></div>
-              <div className="row"><span>Payment ID</span><strong className="mono">{placed.paymentId}</strong></div>
+              {placed.paymentId && (
+                <div className="row"><span>Payment ID</span><strong className="mono">{placed.paymentId}</strong></div>
+              )}
+              <div className="row"><span>Payment method</span><strong>{paidByCard ? 'Razorpay' : 'Cash on Delivery'}</strong></div>
               <div className="row"><span>Estimated delivery</span><strong>{placed.eta}</strong></div>
             </div>
 
             <p className="mantra-line"><Sparkles size={12} /> Aarti mantra & prasad blessing sent to your phone.</p>
 
             <div className="success-actions">
-              <button className="primary-btn" onClick={() => onNavigate('shubh-kart')}>Back to Shop</button>
+              <button className="primary-btn" onClick={() => onNavigate('shubh-kart')}><ShoppingBag size={16} /> Continue Shopping</button>
               <button className="ghost-btn" onClick={() => onNavigate('home')}><Home size={16} /> Home</button>
             </div>
-            <small className="powered">Powered by Shubh Kart · Secured by Razorpay</small>
+            <small className="powered">Powered by AstroLive{paidByCard ? ' · Secured by Razorpay' : ''}</small>
           </div>
         </main>
         <BottomNav active="shubh-kart" onNavigate={onNavigate} />
@@ -101,6 +156,14 @@ export function OrderConfirmPage({ onNavigate }) {
       </div>
     );
   }
+
+  const isCod = method === 'cod';
+  const ctaDisabled = paying || (method === 'razorpay' && !isConfigured());
+  const ctaLabel = paying
+    ? 'Opening secure checkout…'
+    : isCod
+      ? `Place Order · Pay ₹${subtotal} on Delivery`
+      : `Pay ₹${subtotal} Securely`;
 
   return (
     <div className="app-screen">
@@ -132,29 +195,49 @@ export function OrderConfirmPage({ onNavigate }) {
 
         <section className="confirm-card">
           <header>Payment Method</header>
-          <div className="rzp-card">
-            <div className="rzp-brand">
-              <div className="rzp-logo">R</div>
-              <div>
-                <b>Razorpay Secure Checkout</b>
-                <span>UPI · Cards · Netbanking · Wallets</span>
+
+          <label className={`method-card ${method === 'razorpay' ? 'selected' : ''}`}>
+            <input type="radio" name="pay" checked={method === 'razorpay'} onChange={() => setMethod('razorpay')} />
+            <div className="method-body rzp-card">
+              <div className="rzp-brand">
+                <div className="rzp-logo">R</div>
+                <div>
+                  <b>Razorpay Secure Checkout</b>
+                  <span>UPI · Cards · Netbanking · Wallets</span>
+                </div>
+                <div className="rzp-badge"><ShieldCheck size={14} /> Secure</div>
               </div>
-              <div className="rzp-badge"><ShieldCheck size={14} /> Secure</div>
+              <div className="rzp-methods">
+                <span>UPI</span><span>VISA</span><span>Mastercard</span><span>RuPay</span><span>Netbanking</span><span>Paytm</span>
+              </div>
             </div>
-            <div className="rzp-methods">
-              <span>UPI</span><span>VISA</span><span>Mastercard</span><span>RuPay</span><span>Netbanking</span><span>Paytm</span>
+          </label>
+
+          <label className={`method-card cod ${method === 'cod' ? 'selected' : ''}`}>
+            <input type="radio" name="pay" checked={method === 'cod'} onChange={() => setMethod('cod')} />
+            <div className="method-body cod-body">
+              <Wallet size={22} />
+              <div>
+                <b>Cash on Delivery</b>
+                <span>Pay ₹{subtotal} in cash when your order arrives.</span>
+              </div>
+              <div className="cod-badge">No account needed</div>
             </div>
-          </div>
-          {!isConfigured() && (
+          </label>
+
+          {method === 'razorpay' && !isConfigured() && (
             <p className="pay-warn">⚠️ Add your Razorpay Test Key ID in <code>src/config/razorpay.js</code> before paying.</p>
           )}
-          {error && <p className="pay-warn">⚠️ {error}</p>}
         </section>
 
-        <button className="primary-btn full pay-btn" onClick={handlePay} disabled={paying || !isConfigured()}>
-          <Lock size={14} /> {paying ? 'Opening secure checkout…' : `Pay ₹${subtotal} Securely`}
+        <button className={`primary-btn full ${isCod ? '' : 'pay-btn'}`} onClick={handleSubmit} disabled={ctaDisabled}>
+          {isCod ? <Wallet size={16} /> : <Lock size={14} />} {ctaLabel}
         </button>
-        <p className="pay-footnote">You'll be redirected to Razorpay's secure payment window.</p>
+        <p className="pay-footnote">
+          {isCod
+            ? 'Our delivery agent will collect cash on arrival.'
+            : "You'll be redirected to Razorpay's secure payment window."}
+        </p>
       </main>
       <BottomNav active="shubh-kart" onNavigate={onNavigate} />
     </div>
