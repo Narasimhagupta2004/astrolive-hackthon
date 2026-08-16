@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { astrologers, shubhKartProducts } from '../data/appData';
+import { astrologers, shubhKartProducts, connectedUsers, MAX_CONNECTS } from '../data/appData';
 
 const SessionContext = createContext(null);
 
 const SESSION_KEY = 'astro:recent-sessions';
 const RECENT_KEY = 'astro:recent-products';
+const MODE_KEY = 'astro:astrologer-mode';
+const CONNECTS_KEY = 'astro:user-connects';
 
 const MAX_RECENT = 8;
 const MAX_SESSIONS = 2;
@@ -37,9 +39,13 @@ function writeStored(key, value) {
 export function SessionProvider({ children }) {
   const [sessions, setSessions] = useState(() => readStored(SESSION_KEY, seededSessions));
   const [recentIds, setRecentIds] = useState(() => readStored(RECENT_KEY, seededRecent));
+  const [astrologerMode, setAstrologerMode] = useState(() => readStored(MODE_KEY, () => false));
+  const [connects, setConnects] = useState(() => readStored(CONNECTS_KEY, () => ({})));
 
   useEffect(() => { writeStored(SESSION_KEY, sessions); }, [sessions]);
   useEffect(() => { writeStored(RECENT_KEY, recentIds); }, [recentIds]);
+  useEffect(() => { writeStored(MODE_KEY, astrologerMode); }, [astrologerMode]);
+  useEffect(() => { writeStored(CONNECTS_KEY, connects); }, [connects]);
 
   const startSession = (astrologer, mode = 'chat') => {
     if (!astrologer) return;
@@ -57,6 +63,18 @@ export function SessionProvider({ children }) {
     setRecentIds((prev) => [product.id, ...prev.filter((id) => id !== product.id)].slice(0, MAX_RECENT));
   };
 
+  const toggleAstrologerMode = () => setAstrologerMode((v) => !v);
+
+  const connectUser = (userId, mode) => {
+    setConnects((prev) => {
+      const entry = prev[userId] || { used: 0 };
+      if (entry.used >= MAX_CONNECTS) return prev;
+      return { ...prev, [userId]: { used: entry.used + 1, mode, at: Date.now() } };
+    });
+  };
+
+  const resetConnects = () => setConnects({});
+
   const value = useMemo(() => {
     const recentSessions = (sessions || [])
       .map((s) => {
@@ -68,14 +86,31 @@ export function SessionProvider({ children }) {
     const recentProducts = (recentIds || [])
       .map((id) => shubhKartProducts.find((p) => p.id === id))
       .filter(Boolean);
+    const myUsers = connectedUsers.map((u) => {
+      const entry = connects[u.id] || { used: 0 };
+      const lastAt = entry.at || Date.now() - u.lastAtMinsAgo * 60 * 1000;
+      return {
+        ...u,
+        lastMode: entry.mode || u.lastMode,
+        lastAt,
+        connectsUsed: entry.used,
+        connectsLeft: Math.max(0, MAX_CONNECTS - entry.used),
+        canConnect: entry.used < MAX_CONNECTS
+      };
+    });
     return {
       recentSessions,
       startSession,
       clearSessions,
       recentProducts,
-      viewProduct
+      viewProduct,
+      astrologerMode,
+      toggleAstrologerMode,
+      myUsers,
+      connectUser,
+      resetConnects
     };
-  }, [sessions, recentIds]);
+  }, [sessions, recentIds, astrologerMode, connects]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
