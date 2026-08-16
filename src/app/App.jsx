@@ -7,6 +7,7 @@ import { ShubhKartPage } from '../pages/ShubhKartPage';
 import { CartPage } from '../pages/CartPage';
 import { AddressPage } from '../pages/AddressPage';
 import { OrderConfirmPage } from '../pages/OrderConfirmPage';
+import { ConnectedUsersPage } from '../pages/ConnectedUsersPage';
 import { CartProvider } from '../state/CartContext';
 import { SessionProvider } from '../state/SessionContext';
 
@@ -27,6 +28,7 @@ export function App() {
   else if (route === 'cart') page = <CartPage onNavigate={setRoute} />;
   else if (route === 'address') page = <AddressPage onNavigate={setRoute} />;
   else if (route === 'confirm') page = <OrderConfirmPage onNavigate={setRoute} />;
+  else if (route === 'connected') page = <ConnectedUsersPage onNavigate={setRoute} />;
   else page = <HomePage onNavigate={setRoute} />;
 
   return <CartProvider><SessionProvider>{page}</SessionProvider></CartProvider>;
