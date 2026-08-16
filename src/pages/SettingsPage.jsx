@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { BellRing, Languages, Share2, Phone, CircleUser as UserCircle, FileText, LogIn, ChevronRight } from 'lucide-react';
+import { BellRing, Languages, Share2, Phone, CircleUser as UserCircle, FileText, LogIn, ChevronRight, Sparkles, Users } from 'lucide-react';
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
+import { useSession } from '../state/SessionContext';
 
 const rows = [
-  { icon: BellRing, label: 'Notifications', toggle: true },
   { icon: Languages, label: 'Language & Activity' },
   { icon: Share2, label: 'Share' },
   { icon: Phone, label: 'Contact Us' },
@@ -15,21 +15,37 @@ const rows = [
 
 export function SettingsPage({ onNavigate }) {
   const [notifOn, setNotifOn] = useState(true);
+  const { astrologerMode, toggleAstrologerMode } = useSession();
+
   return (
     <div className="app-screen settings-screen">
       <AppHeader variant="back" title="Settings" onBack={() => onNavigate('home')} />
       <main className="settings-main">
-        {rows.map((r, i) => (
-          <button
-            className="setting-row"
-            key={r.label}
-            onClick={() => i === 0 && setNotifOn((v) => !v)}
-          >
+        <button className="setting-row" onClick={() => setNotifOn((v) => !v)}>
+          <BellRing size={24} strokeWidth={1.8} />
+          <span>Notifications</span>
+          <em className={`toggle ${notifOn ? 'on' : ''}`}><i /></em>
+        </button>
+
+        <button className="setting-row" onClick={toggleAstrologerMode}>
+          <Sparkles size={24} strokeWidth={1.8} />
+          <span>Astrologer mode</span>
+          <em className={`toggle ${astrologerMode ? 'on' : ''}`}><i /></em>
+        </button>
+
+        {astrologerMode && (
+          <button className="setting-row" onClick={() => onNavigate('connected')}>
+            <Users size={24} strokeWidth={1.8} />
+            <span>Connected Users</span>
+            <ChevronRight size={24} />
+          </button>
+        )}
+
+        {rows.map((r) => (
+          <button className="setting-row" key={r.label}>
             <r.icon size={24} strokeWidth={1.8} />
             <span>{r.label}</span>
-            {r.toggle
-              ? <em className={`toggle ${notifOn ? 'on' : ''}`}><i /></em>
-              : <ChevronRight size={24} />}
+            <ChevronRight size={24} />
           </button>
         ))}
         <p className="version">Version 2.0.1&nbsp;&nbsp;(58)</p>
