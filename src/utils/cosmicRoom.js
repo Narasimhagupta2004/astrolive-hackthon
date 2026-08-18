@@ -67,7 +67,10 @@ export async function joinRoom(code, person) {
       const snap = await tx.get(ref);
       if (!snap.exists()) throw new Error('no-room');
       const data = snap.data();
-      if (data.b && data.b.uid !== uid) throw new Error('room-full');
+      if (data.b) {
+        if (data.b.uid === uid) return { ...data };
+        throw new Error('room-full');
+      }
       tx.update(ref, { b: { ...person, uid }, status: 'complete' });
       return { ...data, b: { ...person, uid }, status: 'complete' };
     }),

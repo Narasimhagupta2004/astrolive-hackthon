@@ -2280,3 +2280,80 @@ body {
 }
 
 .cc-notes { width: 100%; text-align: left; margin: 4px 0 14px; }
+
+/* Cosmic Chemistry feature card (AstroHub) */
+.cc-feature {
+  position: relative;
+  margin: 0 0 22px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: linear-gradient(104deg, #1b0733 8%, #4a0f8f 58%, #7a1bb5 100%);
+  box-shadow: var(--shadow);
+  min-height: 152px;
+  display: flex;
+}
+
+.cc-feature-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 46%;
+  object-fit: cover;
+  object-position: center top;
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cc-feature-body {
+  position: relative;
+  z-index: 1;
+  width: 74%;
+  padding: 16px;
+  color: #fff;
+}
+
+.cc-feature-body small {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.09em;
+}
+
+.cc-feature-body h2 {
+  font: 700 22px/1.1 'Outfit';
+  margin: 7px 0 5px;
+}
+
+.cc-feature-body p {
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 0 0 13px;
+}
+
+.cc-feature-body button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: #39204c;
+  padding: 9px 16px;
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: 0 3px 0 var(--gold-deep);
+  cursor: pointer;
+}
+
+/* The hub grid holds 4 tiles once Cosmic Chemistry is featured above it, so the
+   last tile must not span both columns the way it does in the 5-tile Home grid. */
+.hub-grid .tool-card:last-child {
+  grid-column: auto;
+  height: 104px;
+}

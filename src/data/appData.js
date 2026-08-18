@@ -96,7 +96,7 @@ export const tools = [
   { title: 'Love Calculator', icon: 'heart', image: stars },
   { title: 'Daily Horoscope', icon: 'sun', image: tarot },
   { title: "Today's Panchanga", icon: 'grid', image: tarot },
-  { title: "Kundli's Match", icon: 'rings', image: portrait2, route: 'cc-start' },
+  { title: 'Cosmic Chemistry', icon: 'rings', image: portrait2, route: 'cc-start' },
   { title: 'Free Kundli', icon: 'heart', image: stars }
 ];
 
