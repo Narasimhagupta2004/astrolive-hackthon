@@ -103,6 +103,7 @@ export function CosmicProvider({ children }) {
       } catch (err) {
         if (err.message === 'room-full') return { ok: false, reason: 'room-full' };
         setDegraded(true);
+        return { ok: false, reason: 'join-failed' };
       }
     }
     if (partner) {

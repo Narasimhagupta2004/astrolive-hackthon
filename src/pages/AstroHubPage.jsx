@@ -1,6 +1,7 @@
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
 import { ToolCard } from '../components/common/ToolCard';
+import { CosmicFeatureCard } from '../components/cosmic/CosmicFeatureCard';
 import { tools } from '../data/appData';
 
 export function AstroHubPage({ onNavigate }) {
@@ -8,9 +9,10 @@ export function AstroHubPage({ onNavigate }) {
     <div className="app-screen">
       <AppHeader variant="home" />
       <main className="hub-main">
+        <CosmicFeatureCard onStart={() => onNavigate('cc-start')} />
         <h2>Free Tools</h2>
         <div className="tools-grid hub-grid">
-          {tools.map((t) => (
+          {tools.filter((t) => t.route !== 'cc-start').map((t) => (
             <ToolCard
               key={t.title}
               tool={t}
