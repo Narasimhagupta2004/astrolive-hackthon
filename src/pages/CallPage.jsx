@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Mic, MicOff, Volume2, PhoneOff, MessageCircle } from 'lucide-react';
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
-import { rashis } from '../data/appData';
+import { rashis, FOLLOWUP_CALL_SECS } from '../data/appData';
 
 function clock(secs) {
   const m = Math.floor(secs / 60);
@@ -13,6 +13,9 @@ function clock(secs) {
 export function CallPage({ onNavigate, target }) {
   const person = target?.person;
   const back = target?.from || 'connected';
+  // A call placed from My Users is a follow-up, so it runs on the free 2-minute
+  // cap. A call started anywhere else is a normal paid reading.
+  const isFollowUp = back === 'connected';
   const [phase, setPhase] = useState('ringing');
   const [secs, setSecs] = useState(0);
   const [muted, setMuted] = useState(false);
@@ -29,6 +32,20 @@ export function CallPage({ onNavigate, target }) {
     const t = setInterval(() => setSecs((s) => s + 1), 1000);
     return () => clearInterval(t);
   }, [phase]);
+
+  // The cap is enforced here, not left to the astrologer to honour.
+  useEffect(() => {
+    if (!isFollowUp || phase !== 'live' || secs < FOLLOWUP_CALL_SECS) return;
+    setPhase('ended');
+  }, [isFollowUp, phase, secs]);
+
+  // Leaving is the same whether the astrologer hung up or the free follow-up ran
+  // out, so both paths only set the phase and this handles the exit.
+  useEffect(() => {
+    if (phase !== 'ended') return undefined;
+    const t = setTimeout(() => onNavigate(back), 1200);
+    return () => clearTimeout(t);
+  }, [phase, onNavigate, back]);
 
   if (!person) {
     return (
@@ -47,12 +64,11 @@ export function CallPage({ onNavigate, target }) {
   }
 
   const rashi = rashis.find((r) => r.id === person.rashi);
-  const status = phase === 'ringing' ? 'Ringing…' : phase === 'ended' ? 'Call ended' : clock(secs);
+  const left = Math.max(0, FOLLOWUP_CALL_SECS - secs);
+  const ended = isFollowUp && left === 0 ? 'Free follow-up ended' : 'Call ended';
+  const status = phase === 'ringing' ? 'Ringing…' : phase === 'ended' ? ended : clock(secs);
 
-  const end = () => {
-    setPhase('ended');
-    setTimeout(() => onNavigate(back), 900);
-  };
+  const end = () => setPhase('ended');
 
   return (
     <div className="app-screen">
@@ -74,6 +90,12 @@ export function CallPage({ onNavigate, target }) {
           )}
           {phase === 'live' && (
             <small className="cl-rec-note">Saved to your consultation history for 30 days.</small>
+          )}
+
+          {isFollowUp && phase !== 'ended' && (
+            <p className={`cl-cap${left <= 30 && phase === 'live' ? ' low' : ''}`}>
+              Free follow-up · {phase === 'live' ? `${clock(left)} left` : `${clock(FOLLOWUP_CALL_SECS)} limit`}
+            </p>
           )}
         </div>
 

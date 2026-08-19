@@ -1,5 +1,5 @@
-const portrait = 'https://images.pexels.com/photos/17040892/pexels-photo-17040892.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const portrait2 = 'https://images.pexels.com/photos/17633487/pexels-photo-17633487.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const portrait = 'https://images.pexels.com/photos/17040982/pexels-photo-17040982.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const portrait2 = 'https://images.pexels.com/photos/13770774/pexels-photo-13770774.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
 const stars = 'https://images.pexels.com/photos/8148203/pexels-photo-8148203.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
 const tarot = 'https://images.pexels.com/photos/7222056/pexels-photo-7222056.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
 
@@ -15,12 +15,12 @@ export const uiAssets = {
   toolBg5: stars
 };
 
-const astro1 = 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const astro2 = 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const astro3 = 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const astro4 = 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const astro5 = 'https://images.pexels.com/photos/3763188/pexels-photo-3763188.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const astro6 = 'https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro1 = 'https://images.pexels.com/photos/17040982/pexels-photo-17040982.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro2 = 'https://images.pexels.com/photos/36818405/pexels-photo-36818405.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro3 = 'https://images.pexels.com/photos/34620809/pexels-photo-34620809.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro4 = 'https://images.pexels.com/photos/7807004/pexels-photo-7807004.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro5 = 'https://images.pexels.com/photos/13770774/pexels-photo-13770774.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const astro6 = 'https://images.pexels.com/photos/31677742/pexels-photo-31677742.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
 
 export const astrologers = [
   {
@@ -69,6 +69,11 @@ const user5 = 'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpe
 
 export const MAX_CONNECTS = 3;
 
+// A follow-up call from My Astrologer is an opener, not a free reading: long
+// enough to say "shall we book a proper session", short enough that it cannot
+// replace one. Enforced on the call screen, not just described in the UI.
+export const FOLLOWUP_CALL_SECS = 120;
+
 export const connectedUsers = [
   {
     id: 'usr-01', name: 'Priya Menon', image: user1, rashi: 'mesha',
@@ -116,14 +121,14 @@ export const tools = [
   { title: 'Free Kundli', icon: 'heart', image: stars }
 ];
 
-const rudraksha = 'https://images.pexels.com/photos/6994982/pexels-photo-6994982.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const bracelet = 'https://images.pexels.com/photos/1191531/pexels-photo-1191531.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const gemstone = 'https://images.pexels.com/photos/1191536/pexels-photo-1191536.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const yantra = 'https://images.pexels.com/photos/6044266/pexels-photo-6044266.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const pooja = 'https://images.pexels.com/photos/6152394/pexels-photo-6152394.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const diya = 'https://images.pexels.com/photos/6044226/pexels-photo-6044226.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const incense = 'https://images.pexels.com/photos/6044743/pexels-photo-6044743.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
-const mala = 'https://images.pexels.com/photos/5560019/pexels-photo-5560019.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const rudraksha = 'https://images.pexels.com/photos/18723426/pexels-photo-18723426.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const bracelet = 'https://images.pexels.com/photos/13077646/pexels-photo-13077646.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const gemstone = 'https://images.pexels.com/photos/37702969/pexels-photo-37702969.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const yantra = 'https://images.pexels.com/photos/6475236/pexels-photo-6475236.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const pooja = 'https://images.pexels.com/photos/11092914/pexels-photo-11092914.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const diya = 'https://images.pexels.com/photos/32357382/pexels-photo-32357382.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const incense = 'https://images.pexels.com/photos/8818748/pexels-photo-8818748.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const mala = 'https://images.pexels.com/photos/6634244/pexels-photo-6634244.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
 
 export const shubhKartProducts = [
   {
