@@ -13,6 +13,7 @@ export function QuizBlock({ question, index, value, onChange }) {
             className={`day-chip ${value === i ? 'active' : ''}`}
             onClick={() => onChange(i)}
           >
+            {o.emoji && <span className="cc-opt-emoji" aria-hidden>{o.emoji}</span>}
             <b>{o.label}</b>
             <span>{o.hint}</span>
           </button>

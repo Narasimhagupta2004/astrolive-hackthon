@@ -7,7 +7,7 @@ import { tools } from '../data/appData';
 export function AstroHubPage({ onNavigate }) {
   return (
     <div className="app-screen">
-      <AppHeader variant="home" />
+      <AppHeader variant="home" onWallet={() => onNavigate('wallet')} onSearch={() => onNavigate('search')} onNotifications={() => onNavigate('notifications')} />
       <main className="hub-main">
         <CosmicFeatureCard onStart={() => onNavigate('cc-start')} />
         <h2>Free Tools</h2>

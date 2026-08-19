@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Share2, RotateCcw } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CheckCircle2, Share2, RotateCcw, Coins } from 'lucide-react';
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
 import { rashis } from '../data/appData';
 import { signTraits } from '../data/cosmicSigns';
 import { computeChemistry } from '../utils/cosmicScore';
 import { useCosmic } from '../state/CosmicContext';
+import { useCoins } from '../state/useCoins';
 
 const COUNT_MS = 900;
 
@@ -39,8 +40,11 @@ function PersonCell({ person, sign }) {
 }
 
 export function CosmicRevealPage({ onNavigate }) {
-  const { pair, restoreLast, resultLink, degraded } = useCosmic();
+  const { pair, me, restoreLast, resultLink, degraded } = useCosmic();
+  const { awardReveal } = useCoins();
   const [restored, setRestored] = useState(false);
+  const [earned, setEarned] = useState(0);
+  const awarded = useRef(false);
 
   useEffect(() => {
     if (!pair && !restored) {
@@ -50,6 +54,17 @@ export function CosmicRevealPage({ onNavigate }) {
   }, [pair, restored, restoreLast]);
 
   const result = useMemo(() => (pair ? computeChemistry(pair.a, pair.b) : null), [pair]);
+
+  useEffect(() => {
+    if (!pair || !me || awarded.current) return;
+    const iAmA = me.name === pair.a.name && me.ymd === pair.a.ymd;
+    const partner = iAmA ? pair.b : pair.a;
+    const selfUid = iAmA ? pair.a.uid : pair.b.uid;
+    if (!partner?.uid) return;
+    awarded.current = true;
+    const res = awardReveal(partner.uid, null, selfUid);
+    if (res.ok) setEarned(res.coins);
+  }, [pair, me, awardReveal]);
   const shown = useCountUp(result ? result.total : 0);
 
   if (!pair || !result) {
@@ -146,6 +161,12 @@ export function CosmicRevealPage({ onNavigate }) {
               <RotateCcw size={15} /> Try someone else
             </button>
           </div>
+
+          {earned > 0 && (
+            <div className="cc-earned" style={{ '--s': 9 }}>
+              <Coins size={15} /> +{earned} coins added to your wallet
+            </div>
+          )}
 
           <small className="powered">
             {signTraits[signA].vibe} × {signTraits[signB].vibe}

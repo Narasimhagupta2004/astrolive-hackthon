@@ -1,21 +1,18 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import { advisorCategories } from '../../data/appData';
 
-const tabs = ['All', 'Vedic', 'Tarot', 'Numerology'];
-
-export function ChatTabs() {
-  const [active, setActive] = useState('All');
+export function ChatTabs({ active, onChange }) {
   return (
     <div className="chat-tabs" role="tablist">
       <SlidersHorizontal size={18} />
-      {tabs.map((t) => (
+      {advisorCategories.map((c) => (
         <button
-          key={t}
-          className={active === t ? 'active' : ''}
-          onClick={() => setActive(t)}
+          key={c.id}
+          className={active === c.id ? 'active' : ''}
+          onClick={() => onChange(c.id)}
           role="tab"
-          aria-selected={active === t}
-        >{t}</button>
+          aria-selected={active === c.id}
+        >{c.label}</button>
       ))}
     </div>
   );
