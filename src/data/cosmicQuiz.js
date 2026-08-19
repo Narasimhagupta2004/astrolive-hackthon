@@ -1,38 +1,38 @@
 export const cosmicQuestions = [
   {
     id: 'q1',
-    title: "It's 11pm and you've both had a rough day. What actually happens?",
-    hint: 'Recharge style',
+    title: 'Mercury goes retrograde. The plan dies, your phone dies, the day is a mess.',
+    hint: 'Chaos instinct',
     weight: [33, 21, 9, 2],
     options: [
-      { label: 'Talk it out', hint: 'Right now, out loud' },
-      { label: 'Sit together, quiet', hint: 'Presence, no words' },
-      { label: 'Distract me', hint: 'Food, a show, a drive' },
-      { label: 'Give me space', hint: "I'll come back to it" }
+      { emoji: '😂', label: 'Laugh and improvise', hint: 'Chaos is the story' },
+      { emoji: '🛠️', label: 'Rebuild the plan', hint: 'Fix it, right now' },
+      { emoji: '🫧', label: 'Reset first', hint: 'Quiet, then talk' },
+      { emoji: '🪐', label: 'Blame the planets', hint: 'This is clearly a sign' }
     ]
   },
   {
     id: 'q2',
-    title: 'The plan is set. They cancel 20 minutes before.',
-    hint: 'Conflict trigger',
+    title: "Full moon, 2am. They ask what you're actually thinking.",
+    hint: 'How open you run',
     weight: [40, 25, 10, 0],
     options: [
-      { label: 'Totally fine', hint: 'Plans are suggestions' },
-      { label: 'Tell me sooner', hint: 'Notice matters' },
-      { label: 'I say it stings', hint: "I'll bring it up" },
-      { label: 'I remember this', hint: 'It goes in the file' }
+      { emoji: '🌊', label: 'All of it, unfiltered', hint: 'You get the whole flood' },
+      { emoji: '🗝️', label: 'The honest headline', hint: 'True, lightly edited' },
+      { emoji: '🌙', label: 'Ask me tomorrow', hint: 'Nothing good is said at 2am' },
+      { emoji: '🔒', label: '"Nothing, I\'m fine"', hint: 'The vault stays shut' }
     ]
   },
   {
     id: 'q3',
-    title: 'Three years out, the good version of us looks like…',
-    hint: 'Future pull',
+    title: 'The universe owes you one straight answer. You spend it on…',
+    hint: 'What you chase',
     weight: [27, 18, 8, 2],
     options: [
-      { label: 'Locked in', hint: 'Home, plans, forever' },
-      { label: 'Building something', hint: 'Work, money, ambition' },
-      { label: 'Two passports', hint: 'Travel, novelty, chaos' },
-      { label: 'No idea, happily', hint: "We'll find out" }
+      { emoji: '💞', label: 'Us', hint: 'Do we actually last?' },
+      { emoji: '🧭', label: 'My purpose', hint: 'What am I here to do?' },
+      { emoji: '🪙', label: 'The money', hint: 'Will I be safe?' },
+      { emoji: '✈️', label: 'The next escape', hint: 'Where do I go from here?' }
     ]
   }
 ];
@@ -48,27 +48,27 @@ export const tiers = [
   {
     id: 'twin-flame', min: 90, name: 'Twin Flame Alignment', emoji: '🔥',
     verdict: "The charts and the answers agree. This is rare — don't be casual about it.",
-    accent: '#ff4d7d', gradient: 'linear-gradient(90deg, #ff8a3d, #ff4d7d)'
+    accent: '#eb468b', gradient: 'linear-gradient(90deg, #ff8f52, #eb468b)'
   },
   {
     id: 'golden', min: 75, name: 'Golden Conjunction', emoji: '✨',
     verdict: 'Strong pull, easy rhythm. The friction you have is the useful kind.',
-    accent: '#be8900', gradient: 'linear-gradient(90deg, #ffd02e, #ff8a3d)'
+    accent: '#e26912', gradient: 'linear-gradient(90deg, #ffa767, #ff8f52)'
   },
   {
     id: 'crescent', min: 55, name: 'Waxing Crescent', emoji: '🌙',
     verdict: 'Real potential, still forming. You need more conversations, not more signs.',
-    accent: '#7b00db', gradient: 'linear-gradient(90deg, #a855f7, #7b00db)'
+    accent: '#6b46eb', gradient: 'linear-gradient(90deg, #8e71f4, #6b46eb)'
   },
   {
     id: 'retrograde', min: 35, name: 'Retrograde Static', emoji: '☄️',
     verdict: 'Wires cross. You want similar things at very different speeds.',
-    accent: '#5b6b8c', gradient: 'linear-gradient(90deg, #8fa3c4, #5b6b8c)'
+    accent: '#635d80', gradient: 'linear-gradient(90deg, #9a94b5, #635d80)'
   },
   {
     id: 'eclipse', min: 0, name: 'Total Cosmic Eclipse', emoji: '🌌',
     verdict: 'Two different orbits. Beautiful from a distance — exhausting up close.',
-    accent: '#3b3350', gradient: 'linear-gradient(90deg, #6b6480, #3b3350)'
+    accent: '#3b1a42', gradient: 'linear-gradient(90deg, #6b4a73, #3b1a42)'
   }
 ];
 

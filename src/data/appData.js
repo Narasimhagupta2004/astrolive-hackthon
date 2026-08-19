@@ -25,37 +25,37 @@ const astro6 = 'https://images.pexels.com/photos/1181690/pexels-photo-1181690.jp
 export const astrologers = [
   {
     id: 'as-01', name: 'Kridha', image: astro1,
-    skills: ['Vedic', 'Tarot'], languages: ['English', 'Hindi'],
+    skills: ['Vedic', 'Tarot'], categories: ['auspicious', 'love'], languages: ['English', 'Hindi'],
     ratePerMin: 12, oldRatePerMin: 15, rating: 4.8, orders: 22800,
     experienceYears: 5, isOnline: true, isLive: true, tag: 'Top Choice'
   },
   {
     id: 'as-02', name: 'Sanyogita', image: astro2,
-    skills: ['Numerology'], languages: ['Hindi', 'Rajasthani', 'English'],
+    skills: ['Numerology'], categories: ['career', 'coach'], languages: ['Hindi', 'Rajasthani', 'English'],
     ratePerMin: 20, oldRatePerMin: 25, rating: 4.9, orders: 31400,
     experienceYears: 3, isOnline: true, isLive: false
   },
   {
     id: 'as-03', name: 'Tashu', image: astro3,
-    skills: ['Tarot'], languages: ['Hindi'],
+    skills: ['Tarot'], categories: ['love', 'coach'], languages: ['Hindi'],
     ratePerMin: 14, oldRatePerMin: 18, rating: 4.6, orders: 9200,
     experienceYears: 5, isOnline: true, isLive: true
   },
   {
     id: 'as-04', name: 'Madhuri', image: astro4,
-    skills: ['Vedic', 'Palmistry'], languages: ['Hindi', 'English'],
+    skills: ['Vedic', 'Palmistry'], categories: ['auspicious', 'health'], languages: ['Hindi', 'English'],
     ratePerMin: 18, oldRatePerMin: 22, rating: 4.7, orders: 15600,
     experienceYears: 10, isOnline: false, isLive: false
   },
   {
     id: 'as-05', name: 'Devansh', image: astro5,
-    skills: ['Vastu', 'Vedic'], languages: ['English', 'Gujarati'],
+    skills: ['Vastu', 'Vedic'], categories: ['auspicious', 'career'], languages: ['English', 'Gujarati'],
     ratePerMin: 25, oldRatePerMin: 30, rating: 4.9, orders: 44100,
     experienceYears: 12, isOnline: true, isLive: true, tag: 'Celebrity'
   },
   {
     id: 'as-06', name: 'Ananya', image: astro6,
-    skills: ['Numerology', 'Tarot'], languages: ['English', 'Bengali'],
+    skills: ['Numerology', 'Tarot'], categories: ['career', 'coach', 'love'], languages: ['English', 'Bengali'],
     ratePerMin: 10, oldRatePerMin: 14, rating: 4.5, orders: 6800,
     experienceYears: 2, isOnline: true, isLive: false
   }
@@ -91,6 +91,22 @@ export const connectedUsers = [
     lastMode: 'call', lastAtMinsAgo: 4320, isOnline: true, consultations: 3
   }
 ];
+
+export const advisorCategories = [
+  { id: 'all', label: 'All', short: 'All' },
+  { id: 'auspicious', label: 'Auspicious Timing', short: 'Auspicious' },
+  { id: 'love', label: 'Love & Marriage', short: 'Marriage' },
+  { id: 'career', label: 'Career & Money', short: 'Career' },
+  { id: 'health', label: 'Health & Peace', short: 'Health' },
+  { id: 'coach', label: 'Life Coach', short: 'Life Coach' }
+];
+
+export function categoryChips(ids) {
+  return (ids || [])
+    .map((id) => advisorCategories.find((c) => c.id === id)?.short)
+    .filter(Boolean)
+    .join(' · ');
+}
 
 export const tools = [
   { title: 'Love Calculator', icon: 'heart', image: stars },

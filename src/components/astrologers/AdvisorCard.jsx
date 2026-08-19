@@ -1,4 +1,5 @@
 import { MessageCircle } from 'lucide-react';
+import { categoryChips } from '../../data/appData';
 
 function formatOrders(n) {
   if (!n) return null;
@@ -19,7 +20,7 @@ export function AdvisorCard({ advisor, onChat }) {
           <h3>{advisor.name}</h3>
           <span>Exp: {advisor.experienceYears}Yrs</span>
         </div>
-        <label className="advisor-skill">{advisor.skills.join(' · ')}</label>
+        <label className="advisor-skill">{categoryChips(advisor.categories)}</label>
         <p className="advisor-langs">{advisor.languages.join(' · ')}</p>
         {orders && <span className="advisor-orders">{orders}</span>}
         <div className="advisor-bottom">

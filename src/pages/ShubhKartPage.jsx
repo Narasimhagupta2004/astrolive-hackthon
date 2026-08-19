@@ -37,7 +37,7 @@ export function ShubhKartPage({ onNavigate }) {
 
   return (
     <div className="app-screen">
-      <AppHeader variant="home" showCart onCart={() => onNavigate('cart')} />
+      <AppHeader variant="home" showCart onCart={() => onNavigate('cart')} onSearch={() => onNavigate('search')} onNotifications={() => onNavigate('notifications')} />
       <main className="shop-main">
         <div className="shop-hero">
           <div>

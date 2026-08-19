@@ -5,6 +5,6 @@ export const RAZORPAY_KEY_ID = 'rzp_test_XXXXXXXXXXXXXX';
 export const RAZORPAY_BRAND = {
   name: 'Shubh Kart',
   description: 'Sacred picks, chosen by the stars',
-  themeColor: '#7b00db',
+  themeColor: '#6b46eb',
   currency: 'INR'
 };
