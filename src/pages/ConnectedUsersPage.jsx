@@ -15,13 +15,18 @@ const connectActions = [
 
 const modeLabels = { chat: 'Chat', call: 'Call', suggest: 'Suggested a product' };
 
+// each sheet action opens its own screen, carrying the person it is about
+const routeForAction = { chat: 'conversation', call: 'call', suggest: 'suggest' };
+
 export function ConnectedUsersPage({ onNavigate }) {
   const { myUsers, connectUser } = useSession();
   const [activeUser, setActiveUser] = useState(null);
 
   const choose = (actionId) => {
-    connectUser(activeUser.id, actionId);
+    const person = activeUser;
+    connectUser(person.id, actionId);
     setActiveUser(null);
+    onNavigate(routeForAction[actionId], { person, from: 'connected' });
   };
 
   const rashiLabel = (id) => rashis.find((r) => r.id === id)?.label;
