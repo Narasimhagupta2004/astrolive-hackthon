@@ -2,6 +2,10 @@
 
 A mobile-styled web app built with Vite + React 19. Client-only — there is no backend server.
 
+**HLD document** — what was built, why, and how:
+**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+A formatted copy downloads in-app from **Settings -> HLD Document**.
+
 ## Running locally
 
 ```bash
@@ -65,12 +69,11 @@ this project, so run it via `npx`:
 
 ```bash
 npx firebase-tools login
-npx firebase-tools use --add                          # creates .firebaserc for this project
 npx firebase-tools deploy --only firestore:rules
 ```
 
-There is no `.firebaserc` in the repo, so `firebase use --add` (or `--project <id>` on every
-command) is required.
+`.firebaserc` in the repo already aliases `astrolive` → `astrolive-hackthon`. To target a different
+project, run `npx firebase-tools use --add` (or pass `--project <id>` on every command).
 
 ### 4. Verify it's connected
 

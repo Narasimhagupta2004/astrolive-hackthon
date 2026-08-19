@@ -352,6 +352,27 @@ body {
 
 .bottom-nav .active { color: var(--purple); }
 
+/* Cart count on the Shubh Kart tab, so an abandoned cart stays visible from
+   every screen rather than only inside the shop. */
+.nav-icon { position: relative; display: flex; }
+
+.nav-count {
+  position: absolute;
+  top: -5px;
+  right: -9px;
+  background: var(--raspberry);
+  color: #fff;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 9.5px;
+  line-height: 1;
+  border-radius: 10px;
+  padding: 3px 5px;
+  min-width: 17px;
+  text-align: center;
+  border: 1.5px solid #fff;
+}
+
 /* Chat */
 .chat-main { padding: 20px 16px; }
 
@@ -497,6 +518,70 @@ body {
 }
 
 .setting-row > span { flex: 1; }
+
+/* The HLD document row is an <a> so the browser handles the download itself. */
+a.setting-row { text-decoration: none; }
+
+.setting-row > span small {
+  display: block;
+  font-size: 13px;
+  line-height: 1.3;
+  color: #7a6180;
+  margin-top: 2px;
+}
+
+/* Highlighted so it reads as new and worth tapping, without shouting. */
+.setting-row.featured {
+  height: auto;
+  min-height: 80px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-color: #c9b6f5;
+  background: linear-gradient(180deg, #f7f3ff 0%, #ffffff 68%);
+  box-shadow: 0 2px 10px #ddd2f2;
+}
+
+.setting-row.featured > svg { color: var(--purple); }
+
+.row-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 600;
+}
+
+.new-flag {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .9px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--purple);
+  border-radius: 4px;
+  padding: 2px 6px;
+  animation: flag-flash 2.4s ease-in-out infinite;
+}
+
+@keyframes flag-flash {
+  0%, 62%, 100% { opacity: 1; transform: scale(1); }
+  72%           { opacity: .55; transform: scale(.94); }
+  82%           { opacity: 1; transform: scale(1.04); }
+}
+
+.dl-icon {
+  color: var(--purple);
+  animation: dl-nudge 2.4s ease-in-out infinite;
+}
+
+@keyframes dl-nudge {
+  0%, 66%, 100% { transform: translateY(0); }
+  78%           { transform: translateY(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-flag, .dl-icon { animation: none; }
+}
 
 .toggle {
   width: 61px;
@@ -2532,6 +2617,26 @@ body {
   margin-top: 7px;
   font-size: 10.5px;
   color: var(--muted);
+}
+
+/* Follow-up calls from My Users run on a free 2-minute cap. The remaining time
+   is always on screen so neither side is surprised when it ends. */
+.cl-cap {
+  margin-top: 12px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  border: 1px solid #d9cff0;
+  background: #f2edff;
+  color: #4a2f9e;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+.cl-cap.low {
+  border-color: #f0cfb8;
+  background: #fdf0e6;
+  color: #9d5a24;
 }
 
 /* The suggestion confirmation reuses .order-success, but sits on a shorter screen,

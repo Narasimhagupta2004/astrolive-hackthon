@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { BellRing, Languages, Share2, Phone, CircleUser as UserCircle, FileText, LogIn, ChevronRight, Sparkles, Users } from 'lucide-react';
+import { BellRing, Languages, Share2, Phone, CircleUser as UserCircle, FileText, LogIn, ChevronRight, Sparkles, Users, Info, Download } from 'lucide-react';
 import { AppHeader } from '../components/layout/AppHeader';
 import { BottomNav } from '../components/layout/BottomNav';
 import { useSession } from '../state/SessionContext';
+
+// Served from public/, so it is a plain static file in dev and in the build.
+const HLD_DOC = '/astrolive-architecture.html';
 
 const rows = [
   { icon: Languages, label: 'Language & Activity' },
@@ -40,6 +43,22 @@ export function SettingsPage({ onNavigate }) {
             <ChevronRight size={24} />
           </button>
         )}
+
+        {/* A real link, so the browser handles the download itself. Highlighted
+            because nobody taps a document they were not looking for. */}
+        <a
+          className="setting-row featured"
+          href={HLD_DOC}
+          download="AstroLive-HLD.html"
+          aria-label="Download the HLD document"
+        >
+          <Info size={24} strokeWidth={1.8} />
+          <span>
+            <b className="row-title">HLD Document <em className="new-flag">New</em></b>
+            <small>Architecture &amp; feature design</small>
+          </span>
+          <Download size={22} className="dl-icon" />
+        </a>
 
         {rows.map((r) => (
           <button className="setting-row" key={r.label}>
