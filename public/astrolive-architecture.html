@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AstroLive — Five Changes, and Why</title>
+<style>
+  :root{
+    --paper:#f6f5f2; --card:#fff; --card2:#efeef0;
+    --ink:#1c1a24; --ink2:#413d4d; --muted:#6d6878;
+    --rule:#dcd8e0; --rule2:#eae7ec;
+    --violet:#5433d4; --violet-dim:#ece8fc;
+    --warm:#9d5a24; --warm-dim:#faf1e6;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+       font-size:16px;line-height:1.68;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;padding:0 26px 80px}
+
+  header.top{background:var(--card);border-bottom:1px solid var(--rule)}
+  .top-in{max-width:780px;margin:0 auto;padding:46px 26px 28px;
+          display:flex;flex-direction:column;gap:16px}
+  .kicker{font-size:13px;letter-spacing:.02em;color:var(--violet);font-weight:600}
+  h1{font-family:var(--serif);font-size:clamp(31px,5.6vw,45px);font-weight:600;
+     line-height:1.08;letter-spacing:-.02em;margin:0}
+  .stand{margin:0;max-width:58ch;color:var(--ink2);font-size:17px}
+  .byline{display:flex;flex-wrap:wrap;gap:6px 20px;padding-top:12px;
+          border-top:1px solid var(--rule2);font-size:13.5px;color:var(--muted)}
+  .byline b{color:var(--ink);font-weight:600}
+  .byline a{color:var(--violet)}
+
+  main{display:flex;flex-direction:column;gap:40px;padding-top:38px}
+  section{display:flex;flex-direction:column;gap:15px}
+  h2{font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:-.01em;
+     margin:0;padding-top:13px;border-top:2px solid var(--ink)}
+  h2 .n{color:var(--violet);font-family:var(--sans);font-size:14px;font-weight:700;
+        display:block;margin-bottom:3px;letter-spacing:.02em}
+  h3{font-size:16px;font-weight:700;color:var(--ink);margin:10px 0 -7px}
+  p{margin:0;max-width:66ch}
+  strong{font-weight:600}
+  ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;max-width:66ch}
+  li::marker{color:var(--muted)}
+  a{color:var(--violet)}
+  code{font-family:var(--mono);font-size:.85em;background:var(--card2);
+       padding:1px 5px;border-radius:3px}
+
+  .problem{font-family:var(--serif);font-size:19.5px;line-height:1.52;
+           color:var(--ink2);max-width:56ch;border-left:3px solid var(--violet);
+           padding:2px 0 2px 17px}
+
+  .aside{background:var(--warm-dim);border:1px solid #e8d9c6;border-radius:6px;
+         padding:16px 19px;display:flex;flex-direction:column;gap:8px;max-width:66ch}
+  .aside .who{font-size:12.5px;font-weight:700;color:var(--warm);
+              letter-spacing:.04em;text-transform:uppercase}
+  .aside p{font-family:var(--serif);font-size:17px;line-height:1.58;color:#4a3a2a;max-width:none}
+
+  .tw{overflow-x:auto;border:1px solid var(--rule);border-radius:5px;background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th{text-align:left;font-size:12.5px;font-weight:700;color:var(--muted);
+     padding:11px 15px;border-bottom:1px solid var(--rule);background:var(--card2);white-space:nowrap}
+  td{padding:11px 15px;border-bottom:1px solid var(--rule2);vertical-align:top;color:var(--ink2)}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--ink);font-weight:600}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:16px;
+        border:1px solid var(--rule);border-radius:5px;background:var(--card);overflow-x:auto}
+  .step{border:1px solid var(--rule);background:var(--paper);border-radius:4px;
+        padding:7px 12px;font-size:13.5px;white-space:nowrap}
+  .step.key{border-color:var(--violet);background:var(--violet-dim);color:var(--violet);font-weight:600}
+  .step.stop{border-color:var(--warm);background:var(--warm-dim);color:var(--warm);font-weight:600}
+  .arrow{color:var(--muted)}
+
+  pre{margin:0;overflow-x:auto;background:var(--card);border:1px solid var(--rule);
+      border-left:3px solid var(--violet);border-radius:5px;padding:14px 16px;
+      font-family:var(--mono);font-size:12.6px;line-height:1.68;color:var(--ink2)}
+  pre i{color:var(--muted);font-style:normal}
+
+  .next{border-top:1px dashed var(--rule);padding-top:13px;display:flex;
+        flex-direction:column;gap:6px;max-width:66ch}
+  .next .tag{font-size:12.5px;font-weight:700;color:var(--warm)}
+  .next p{font-size:15px}
+
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);
+         font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+
+  @media print{
+    body{background:#fff;font-size:11pt}
+    .top-in,.wrap{padding-left:0;padding-right:0;max-width:100%}
+    section{break-inside:avoid} h2{break-after:avoid}
+    .aside{background:#faf6f0}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <span class="kicker">AstroLive · Hackathon build · High-level design</span>
+    <h1>Five changes I made to AstroLive, and why</h1>
+    <p class="stand">
+      Each one started from something I noticed — either using the app, reading about how these
+      apps make money, or just watching what my friends actually do. This document explains the
+      thinking first, then how it is built.
+    </p>
+    <div class="byline">
+      <span><b>Built for</b> mobile web (mweb)</span>
+      <span><b>Stack</b> React 19 · Vite · Firebase</span>
+      <span><b>Code</b> <a href="https://github.com/Narasimhagupta2004/astrolive-hackthon">github.com/Narasimhagupta2004/astrolive-hackthon</a></span>
+      <span><b>Team</b> Bandaru Narasimhagupta (SDE1, Infinite Locus) · Karri Naveen (SDE1, Jungleworks)</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+
+<section>
+  <h2><span class="n">01</span>Before you read the features</h2>
+  <p>Two things worth knowing up front, because they shape everything below.</p>
+  <p>
+    <strong>This is a mobile-web prototype, not the app.</strong> I built it as mweb because it is
+    the fastest way to put a working thing in someone's hand — you send a link, it opens, no
+    install. But I want to be clear that I know where the money actually is:
+    <strong>the app will always out-earn the web.</strong> Push notifications, a home-screen icon,
+    saved payment methods, and sessions that don't end when a tab closes — those are what drive
+    repeat consultations, and the browser gives us weak versions of all four. So treat everything
+    here as a design proven on mweb and meant to move to the app. Nothing in it is web-specific.
+  </p>
+  <p>
+    <strong>I could not see the astrologer's side of the product.</strong> I have only ever used
+    AstroLive as a customer, so for the first feature I had to guess what an astrologer's panel
+    looks like. I have marked that assumption clearly rather than hiding it.
+  </p>
+</section>
+
+<section>
+  <h2><span class="n">02</span>What it is built with</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Tool</th><th>Used for</th><th>Why this one</th></tr></thead>
+    <tbody>
+      <tr><td>React 19</td><td>The whole interface</td><td>Standard, well understood, easy to hand over</td></tr>
+      <tr><td>Vite</td><td>Build and dev server</td><td>Instant reload, and it opens on a real phone over Wi-Fi while you work</td></tr>
+      <tr><td>Redux Toolkit</td><td>The coins ledger only</td><td>Coins turn into money, so they need stricter handling than the rest</td></tr>
+      <tr><td>React Context</td><td>Cart, recent sessions</td><td>Lighter than Redux, right for data that is short-lived</td></tr>
+      <tr><td>Firebase</td><td>Live sync for Cosmic Chemistry</td><td>Real-time updates with no server to run</td></tr>
+      <tr><td>Razorpay</td><td>Checkout in Shubh Kart</td><td>Standard Indian gateway; loads only at checkout</td></tr>
+      <tr><td>lucide-react</td><td>Icons</td><td>One consistent set, ships only the icons used</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>How the folders are laid out</h3>
+<pre>src/
+├── pages/        <i>one file per screen — 21 screens</i>
+├── components/   <i>reusable pieces, grouped by area</i>
+├── data/         <i>every business rule and price, in one place</i>
+├── state/        <i>shared memory: cart, sessions</i>
+├── store/        <i>the coins ledger</i>
+├── utils/        <i>anything that talks outside (Firebase, Razorpay)</i>
+└── styles/       <i>one stylesheet</i></pre>
+  <p>
+    One rule holds it together: <strong>pages arrange, components display, data decides, state
+    remembers, utils connect.</strong> Every cap, price and rule sits in <code>data/</code> rather
+    than buried inside a screen — so changing "3 connects" to "5 connects" is one line in one file,
+    not a hunt through twenty.
+  </p>
+</section>
+
+<section>
+  <h2><span class="n">03</span>My Astrologer</h2>
+  <p class="problem">
+    A consultation happens once. The user asks, the astrologer answers, the session ends, and then
+    nothing. There is no follow-up at all — so every relationship starts again from zero.
+  </p>
+
+  <h3>What I built</h3>
+  <p>
+    A view of the app from the astrologer's side. Turn on <strong>Astrologer Mode</strong> and the
+    menu gains <strong>My Users</strong> — the people they have already consulted — with three
+    follow-up actions: pick the chat back up, ring them, or suggest a remedy from Shubh Kart.
+  </p>
+
+  <div class="aside">
+    <span class="who">A note on this one</span>
+    <p>
+      I have never seen the astrologer panel, so I built this as a proposal for what should sit
+      inside it rather than a copy of something that exists. If the panel already works differently,
+      the idea still holds — it just needs to be placed there instead.
+    </p>
+  </div>
+
+  <h3>Why it works</h3>
+  <p>
+    A message from the person who just read your chart is the most persuasive thing in the app, and
+    it costs nothing to send. It also makes the user feel remembered, which is what actually brings
+    people back.
+  </p>
+  <p>
+    The obvious risk is that it turns into spam. So this is a <strong>quota, not a broadcast</strong>:
+    three connects per user, ever. The astrologer sees "2 of 3 connects left" before spending one,
+    which pushes them to use it on the users who genuinely matter. And because every follow-up is
+    recorded, nobody can quietly abuse it.
+  </p>
+
+  <h3>The follow-up call is capped at 2 minutes</h3>
+  <p>
+    A follow-up call has to be a nudge, not a free reading. Two minutes is long enough to say
+    "I've been thinking about your chart, shall we book a proper session" and not long enough to
+    give away a consultation. It protects paid minutes while still feeling personal, and it makes
+    the intent unambiguous on both sides — the astrologer knows it is an opener, and the user knows
+    they are not about to be sold to for twenty minutes.
+  </p>
+  <p>
+    The timer runs on the call screen and ends the call at 2:00, the same way the connect counter
+    works: the limit lives in the data, not just in the button.
+  </p>
+
+  <div class="flow">
+    <span class="step">Astrologer Mode on</span><span class="arrow">→</span>
+    <span class="step">My Users</span><span class="arrow">→</span>
+    <span class="step key">Connects left?</span><span class="arrow">→</span>
+    <span class="step">Chat · Call (2 min) · Suggest</span><span class="arrow">→</span>
+    <span class="step stop">Counter −1</span>
+  </div>
+
+  <h3>How it is built</h3>
+  <ul>
+    <li>One on/off setting swaps a tab into the menu — no duplicate screens, no second app.</li>
+    <li>The three actions run off a single lookup table, so a fourth action is one line.</li>
+    <li>The counter and the call cap both live in stored data, so the rules hold even if a button is missed.</li>
+    <li>A suggested product arrives <em>as a message, not an order</em>. The user can ignore it, which is exactly why they trust it.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="n">04</span>Continue where you left</h2>
+  <p class="problem">
+    Every visit starts at a grid of astrologers. So people pick a different one each time, get the
+    same question answered three different ways, and end up more confused than when they arrived.
+  </p>
+
+  <div class="aside">
+    <span class="who">Where this came from</span>
+    <p>
+      In real life nobody shops around like this. You go back to the same astrologer, year after
+      year, because they already know your situation. The app was doing the opposite of what people
+      actually do — and when three readings contradict each other, the user doesn't conclude that
+      one of them was wrong. They conclude the whole thing is nonsense, and they leave.
+    </p>
+  </div>
+
+  <h3>What I built</h3>
+  <p>
+    The home screen now opens with the last astrologers you spoke to — chat or call, how long ago,
+    and a <strong>Resume</strong> button.
+  </p>
+
+  <h3>Why it works</h3>
+  <p>
+    Continuity is what makes advice feel credible. Putting the last person you spoke to at the top
+    makes going back the easy choice and starting over the deliberate one.
+  </p>
+  <p>
+    And trust travels. Once someone has stayed with the same astrologer long enough to believe in
+    them, they stop recommending the app and start recommending the person — "go to this astrologer,
+    they were right about my job." That is a much stronger referral than a generic invite, because
+    the new user arrives already knowing who to book. It also gives us something to build on: a
+    share card for a specific astrologer, sent by someone who has actually consulted them.
+  </p>
+  <p>
+    The list stops at <strong>two</strong> on purpose. A resume list exists to remove a decision.
+    A list of ten just recreates the paralysis it was built to fix.
+  </p>
+
+  <div class="flow">
+    <span class="step">User starts a chat</span><span class="arrow">→</span>
+    <span class="step key">Saved on the device</span><span class="arrow">→</span>
+    <span class="step">Comes back later</span><span class="arrow">→</span>
+    <span class="step">Home shows Resume</span>
+  </div>
+
+  <h3>How it is built</h3>
+  <ul>
+    <li>Only the astrologer's ID and the time are saved. The live profile is fetched fresh every time, so the rate and the online dot are never stale.</li>
+    <li>Newest first, duplicates removed, trimmed to two.</li>
+    <li>Saving is wrapped safely so private-browsing mode degrades quietly instead of breaking the page.</li>
+  </ul>
+
+  <div class="next"><span class="tag">Next</span>
+    <p>Hold the history on the account so it follows the user to a new phone, and reopen the actual conversation rather than the profile.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">05</span>Shubh Kart recommendations</h2>
+  <p class="problem">
+    The store is a flat grid with no recommendations at all. Someone who has just been told they
+    have Shani dosh has to work out for themselves which of nine products relates to that.
+  </p>
+
+  <div class="aside">
+    <span class="who">Where this came from</span>
+    <p>
+      I went through a few competitor apps and some write-ups on how this category makes money, and
+      the pattern is consistent: a large share of the revenue comes from suggesting the right
+      product at the right moment, not from the consultation itself. We already have the strongest
+      possible salesperson — the astrologer the user just paid to trust — and we were not using them.
+    </p>
+  </div>
+
+  <h3>What I built</h3>
+  <p>Two ways to reach the right product, for two different moments:</p>
+  <ul>
+    <li><strong>The user filters by intent</strong> — Peace, Love, Career, Wealth, Protection, Growth — and picks their rashi to see suitable items first, marked <em>For You</em>.</li>
+    <li><strong>The astrologer suggests directly.</strong> After a reading they can send one specific remedy to that user.</li>
+  </ul>
+
+  <h3>Why it works</h3>
+  <p>
+    The second path is the valuable one, and it costs nothing to run. One design decision is worth
+    calling out: <strong>intent narrows the list, but rashi only reorders it.</strong> If rashi
+    filtered too, most of the catalogue would disappear and browsing would die. Personalisation
+    should reorder a shop, never shrink it.
+  </p>
+
+  <div class="flow">
+    <span class="step">Intent chip</span><span class="arrow">→</span>
+    <span class="step">Narrows the list</span><span class="arrow">→</span>
+    <span class="step key">Rashi reorders</span><span class="arrow">→</span>
+    <span class="step">Cart</span><span class="arrow">→</span>
+    <span class="step">Free gift at ₹1,500</span>
+  </div>
+  <p>The astrologer's suggestion feeds the same cart from the other direction.</p>
+
+  <h3>How it is built</h3>
+  <ul>
+    <li>Each product carries its own targeting — which intents and rashis it suits — so merchandising is a data change, not a code change.</li>
+    <li>Totals, item count and the free-gift progress bar are always recalculated from the cart, so a total can never disagree with its items.</li>
+    <li>Razorpay only loads at checkout, and switches off cleanly if no key is configured.</li>
+  </ul>
+
+  <div class="next"><span class="tag">Next — the affiliate idea</span>
+    <p>
+      If a product we don't stock is one the astrologer has, we can list it in Shubh Kart after
+      verifying it, and pay the astrologer a commission. Two things have to exist first: a
+      verification step for authenticity, stock and returns, and attribution — recording which
+      astrologer suggested the sale — because you cannot split a commission you cannot trace.
+      Beyond that, ranking should use real signals: what the consultation was about, past purchases,
+      and the user's kundli.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">06</span>Categories by problem, and Life Coach</h2>
+  <p class="problem">
+    The old tabs were All · Vedic · Tarot · Numerology. Nobody opens the app thinking "I need
+    Numerology today." They open it thinking "will I get this job." We were labelling our method
+    when the user is buying an outcome.
+  </p>
+
+  <div class="aside">
+    <span class="who">Where this came from</span>
+    <p>
+      I messaged some friends asking where they were. They said they'd gone to a yoga session and
+      to hear a talk from a Vedic priest. I found that genuinely funny — these are people who never
+      listened to a single word their parents said, and now they're sitting through this
+      voluntarily. It's a good thing, though. Somewhere in an hour like that, one point lands and
+      actually changes something. That's when it struck me: the appetite here is for
+      <em>guidance</em>, not specifically for astrology. So why aren't we offering life coaching
+      properly?
+    </p>
+  </div>
+
+  <h3>What I built</h3>
+  <p>Categories are now the problems people actually have, and Life Coach is one of them:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Category</th><th>What the user is really asking</th></tr></thead>
+    <tbody>
+      <tr><td>Auspicious Timing</td><td>When should I do this?</td></tr>
+      <tr><td>Love &amp; Marriage</td><td>Is this the right person?</td></tr>
+      <tr><td>Career &amp; Money</td><td>Will this job or investment work out?</td></tr>
+      <tr><td>Health &amp; Peace</td><td>Why do I feel like this?</td></tr>
+      <tr><td>Life Coach</td><td>What should I do with my life?</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Why it works</h3>
+  <p>
+    A user reads the tab bar and immediately finds themselves in it. That is the entire job of a
+    category list, and the old one wasn't doing it.
+  </p>
+  <p>
+    Life Coach also opens a market with no religious prerequisite, which is a much wider funnel —
+    and we already have the supply, because several astrologers already counsel this way.
+  </p>
+  <p>
+    It is the one category that suits a <strong>subscription</strong>. Astrology is episodic: you
+    consult when something is wrong. Coaching is continuous. Give one or two sessions free for a
+    month, let the habit form, then charge monthly — that matches how people actually use it.
+  </p>
+
+  <div class="flow">
+    <span class="step">Skills: Vedic · Tarot</span><span class="arrow">→</span>
+    <span class="step key">Problems solved: Career · Life Coach</span><span class="arrow">→</span>
+    <span class="step">Listed under those tabs</span>
+  </div>
+
+  <h3>How it is built</h3>
+  <ul>
+    <li>An astrologer keeps their <em>skills</em> (how they work) and gains <em>categories</em> (what they solve). One astrologer can serve several problems.</li>
+    <li>The category list is defined once and drives the tabs, the card labels and search together — a new category is one line.</li>
+    <li>Each category has a long name for tabs and a short one for cards, so nothing gets cut off on a small screen.</li>
+    <li>If a category has nobody free, the user gets a clear message and a one-tap way back to everyone.</li>
+  </ul>
+
+  <div class="next"><span class="tag">Next — the part that needs care</span>
+    <p>
+      The hard question is <strong>who decides an astrologer's categories</strong>. Get it wrong and
+      every astrologer claims every category, and the filter is useless again. The plan: astrologers
+      self-declare at onboarding, we check that against what their consultations were actually
+      about, and cap each one at three categories. For the Life Coach subscription we also need
+      trial and renewal tracking, which is a backend piece.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">07</span>Referrals, sharing and coins</h2>
+  <p class="problem">
+    Paid installs are expensive. The cheapest real growth is one user telling another — but only if
+    there is a reason to. And the trap on the other side is just as real: reward sharing carelessly
+    and you end up funding fraud instead of growth.
+  </p>
+
+  <div class="aside">
+    <span class="who">Where this came from</span>
+    <p>
+      In college my friends were forever passing around referral links to make a bit of money. I
+      once put in a solid fifty minutes of effort for a single signup — and yes, there was a shorter
+      route from my hostel to theirs, but let's not get into that. The point survives the joke:
+      people will go to genuinely absurd lengths for a small reward, as long as the reward is real
+      and they can see it. That is a growth channel you cannot buy.
+    </p>
+  </div>
+
+  <h3>What I built</h3>
+  <p>
+    Users share a Cosmic Chemistry reading with a friend and earn coins, which come off their next
+    wallet recharge.
+  </p>
+  <div class="tw"><table>
+    <thead><tr><th>Rule</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Coin value</td><td class="num">10 coins = ₹1</td></tr>
+      <tr><td>A reading completed with someone new</td><td class="num">+5 coins · max 3/day · 100 lifetime</td></tr>
+      <tr><td>A referred friend's first recharge of ₹200+</td><td class="num">+500 coins (₹50)</td></tr>
+      <tr><td>Coins can cover</td><td class="num">up to 10% of a recharge of ₹100+</td></tr>
+      <tr><td>Coins expire</td><td class="num">90 days, oldest used first</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Why this cannot lose the business money</h3>
+  <p>
+    The <strong>10% cap is the whole defence.</strong> To use ₹50 of coins, a user has to recharge
+    ₹500. Every coin redeemed is attached to revenue at least ten times bigger, so the programme
+    funds itself by design — that is arithmetic, not optimism.
+  </p>
+  <div class="tw"><table>
+    <thead><tr><th>Coins held</th><th>Worth</th><th>Recharge needed to use them all</th></tr></thead>
+    <tbody>
+      <tr><td class="num">200</td><td class="num">₹20</td><td class="num">₹200</td></tr>
+      <tr><td class="num">500 (one referral)</td><td class="num">₹50</td><td class="num">₹500</td></tr>
+      <tr><td class="num">1,000</td><td class="num">₹100</td><td class="num">₹1,000</td></tr>
+    </tbody>
+  </table></div>
+  <p>
+    Abuse is capped as well. The share bonus stops at 100 coins for life —
+    <strong>₹10 per person, once, ever</strong> — and even that only converts against ₹100 of
+    spend. Gaming it costs more than it pays.
+  </p>
+
+  <div class="flow">
+    <span class="step">Share the link</span><span class="arrow">→</span>
+    <span class="step">Friend completes it</span><span class="arrow">→</span>
+    <span class="step key">+5 coins, expire in 90 days</span><span class="arrow">→</span>
+    <span class="step">Recharge ₹500</span><span class="arrow">→</span>
+    <span class="step stop">Pay ₹450</span>
+  </div>
+
+  <h3>How it is built</h3>
+  <ul>
+    <li><strong>Every coin batch is tracked separately</strong>, each with its own expiry date — so coins can expire, be audited, or be reversed. A single running total could do none of those.</li>
+    <li><strong>Coins nearest expiry are spent first</strong>, so users never lose value they could have used.</li>
+    <li><strong>The same eligibility check runs twice</strong> — once when the button is drawn, once when the coins are written — so the screen and the ledger can never disagree.</li>
+    <li><strong>Every reward type is a config entry</strong> with its own caps, so a festival campaign is a settings change, not new code.</li>
+    <li><strong>The 10% cap is recalculated live</strong> from the selected amount, so it can never fall out of step.</li>
+    <li>The rules and the customer-facing terms come from <strong>one file</strong>, so what we enforce and what we promise stay identical.</li>
+  </ul>
+
+  <div class="next"><span class="tag">Next — required before this touches real money</span>
+    <p>
+      Coins become a discount on a payment, so the balance has to be held and awarded on a server,
+      not on the phone. That means phone-number sign-in, a server-side ledger, and awards tied to a
+      verified recharge. Until that exists my recommendation is to show coins in the profile but not
+      let them reduce a payment. The full write-up is in <code>docs/coins-rewards-plan.md</code>.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">08</span>How we would know if any of this worked</h2>
+  <p>
+    Every feature above is a hypothesis. None of them should stay in the product just because they
+    sound reasonable — including mine. Here is how I would measure them.
+  </p>
+
+  <h3>Run them as experiments, not launches</h3>
+  <p>
+    <strong>GrowthBook</strong> for A/B testing: it is open-source, self-hostable, and does feature
+    flags and experiments in one place — so a feature can be switched off without a release. Each of
+    the five has an obvious test:
+  </p>
+  <div class="tw"><table>
+    <thead><tr><th>Experiment</th><th>What we would measure</th></tr></thead>
+    <tbody>
+      <tr><td>Resume section on / off</td><td>Repeat consultations per user, and whether they go back to the same astrologer</td></tr>
+      <tr><td>Problem categories vs. old skill tabs</td><td>Browse-to-chat conversion, and time to first chat</td></tr>
+      <tr><td>Connect quota of 3 vs. 5</td><td>Follow-up conversion against block and report rate — the point where helpful turns annoying</td></tr>
+      <tr><td>Follow-up call at 2 min vs. 5 min</td><td>How many short calls convert into a paid session</td></tr>
+      <tr><td>Astrologer suggestion on / off</td><td>Shubh Kart revenue per consultation</td></tr>
+      <tr><td>Coin cap at 10% vs. 15%</td><td>Recharge frequency against margin per recharge</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Watch what people actually do</h3>
+  <ul>
+    <li><strong>Microsoft Clarity</strong> — session recordings and heatmaps. This is the one that answers "why did nobody tap that": rage clicks, dead clicks, where people stop scrolling. It is free, and it catches things a funnel chart never will.</li>
+    <li><strong>GA4, deployed through GTM</strong> — the funnel numbers. GTM matters here because we can add or fix a tag without waiting for a release, which is the difference between measuring a launch and measuring it three weeks late.</li>
+    <li><strong>Segment</strong> as a CDP, if and when we need it. Not on day one. It earns its cost once several tools all need the same clean event stream and we are tired of instrumenting each one separately.</li>
+  </ul>
+
+  <h3>The events I would define first</h3>
+  <p>
+    <code>resume_card_tapped</code> · <code>category_selected</code> ·
+    <code>astrologer_connect_used</code> · <code>followup_call_ended</code> (with duration, so we
+    can see whether 2 minutes is the right cap) · <code>product_suggested</code> ·
+    <code>suggestion_purchased</code> · <code>share_completed</code> · <code>coins_redeemed</code>.
+    Six of those eight are things we currently cannot see at all.
+  </p>
+</section>
+
+<section>
+  <h2><span class="n">09</span>What moves to a backend, in order</h2>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Feature</th><th>What it needs</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Everything</td><td>Phone-number sign-in — unblocks all of the below</td></tr>
+      <tr><td class="num">2</td><td>Coins</td><td>Server-held balance, awarding and redemption</td></tr>
+      <tr><td class="num">3</td><td>Shubh Kart</td><td>Order creation and payment verification on the server</td></tr>
+      <tr><td class="num">4</td><td>My Astrologer</td><td>Real consultation records, server-side connect quota and call cap</td></tr>
+      <tr><td class="num">5</td><td>Continue where you left</td><td>History on the account so it survives a new phone</td></tr>
+      <tr><td class="num">6</td><td>Categories</td><td>Verified category assignment on astrologer profiles</td></tr>
+    </tbody>
+  </table></div>
+  <p>
+    The code was written with this move in mind. The coins ledger in particular has one clearly
+    marked place where saving happens, so switching it to a server is a swap rather than a rewrite.
+  </p>
+</section>
+
+<footer>
+  <span><strong>Team</strong></span>
+  <span>Bandaru Narasimhagupta — SDE1, Infinite Locus</span>
+  <span>Karri Naveen — SDE1, Jungleworks</span>
+  <span><strong>Code:</strong> <a href="https://github.com/Narasimhagupta2004/astrolive-hackthon">github.com/Narasimhagupta2004/astrolive-hackthon</a></span>
+</footer>
+
+</main>
+</div>
+</body>
+</html>
