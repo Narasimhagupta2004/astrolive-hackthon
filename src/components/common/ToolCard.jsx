@@ -10,6 +10,7 @@ export function ToolCard({ tool, onClick }) {
       style={{ backgroundImage: `linear-gradient(100deg, rgba(20,12,52,.82), rgba(58,12,110,.35)), url(${tool.image})` }}
       onClick={onClick}
     >
+      {tool.badge && <span className="tool-badge">{tool.badge}</span>}
       <Icon size={26} strokeWidth={1.6} />
       <b>{tool.title}</b>
     </button>

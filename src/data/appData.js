@@ -114,6 +114,7 @@ export function categoryChips(ids) {
 }
 
 export const tools = [
+  { title: 'Muhurat AI', icon: 'sun', image: stars, route: 'muhurat', badge: 'NEW' },
   { title: 'Love Calculator', icon: 'heart', image: stars },
   { title: 'Daily Horoscope', icon: 'sun', image: tarot },
   { title: "Today's Panchanga", icon: 'grid', image: tarot },
