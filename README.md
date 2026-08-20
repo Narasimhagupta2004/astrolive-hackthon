@@ -142,19 +142,6 @@ npx firebase-tools deploy --only hosting
 To deploy **without** the Gemini key in the bundle (how the live site is currently built), blank
 `VITE_GEMINI_API_KEY` in `.env` before `npm run build`, then restore it afterwards.
 
-### Regenerating the HLD PDF
-
-`public/AstroLive-HLD.pdf` is a build artifact, printed from a styled HTML version of
-`docs/ARCHITECTURE.md`. That HTML is not kept in the tree — the last committed copy is in git
-history at `public/astrolive-architecture.html`:
-
-```bash
-git show 43d6406:public/astrolive-architecture.html > /tmp/hld.html
-# open /tmp/hld.html in a browser and Print → Save as PDF → public/AstroLive-HLD.pdf
-```
-
-If the document changes often, it is worth keeping that HTML in `docs/` instead.
-
 ## Known gaps
 
 No tests, no CI, no TypeScript. All astrologer, user and product data is mock data in
