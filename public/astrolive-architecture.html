@@ -87,6 +87,55 @@
   footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);
          font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
 
+  /* ---- engineering layer ---- */
+
+  /* architecture diagram: plain monospace so it survives print and offline */
+  .arch{margin:0;overflow-x:auto;background:var(--card);border:1px solid var(--rule);
+        border-radius:5px;padding:18px 16px;font-family:var(--mono);
+        font-size:11.6px;line-height:1.5;color:var(--ink2);white-space:pre}
+
+  /* the same seven-layer strip under every feature */
+  .spec{border:1px solid var(--rule);border-radius:5px;background:var(--card);overflow:hidden}
+  .spec-row{display:grid;grid-template-columns:104px minmax(0,1fr);
+            border-bottom:1px solid var(--rule2);font-size:14px}
+  .spec-row:last-child{border-bottom:none}
+  .spec-row > dt{padding:9px 13px;background:var(--card2);font-size:11.5px;font-weight:700;
+                 color:var(--muted);letter-spacing:.03em;text-transform:uppercase}
+  .spec-row > dd{margin:0;padding:9px 14px;color:var(--ink2);min-width:0;overflow-wrap:anywhere}
+  .spec-row.metric > dd{color:var(--warm);font-weight:600}
+  dl.spec{margin:0}
+
+  /* tech stack at a glance */
+  .stack{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:7px 12px;
+         align-items:baseline;border:1px solid var(--rule);border-radius:5px;
+         background:var(--card);padding:16px 18px;overflow-x:auto}
+  .stack b{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap}
+  .stack i{color:var(--muted);font-style:normal}
+  .stack span{font-size:14.5px;color:var(--ink2)}
+  .stack span em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;
+                 text-transform:uppercase;color:var(--warm);background:var(--warm-dim);
+                 border-radius:3px;padding:1px 5px;margin-left:6px;white-space:nowrap}
+
+  /* an assumption is not an aside — it gets its own, louder treatment */
+  .assume{border:1px solid var(--violet);border-left-width:4px;border-radius:5px;
+          background:var(--violet-dim);padding:15px 18px;display:flex;
+          flex-direction:column;gap:7px;max-width:66ch}
+  .assume .who{font-size:12px;font-weight:700;letter-spacing:.06em;
+               text-transform:uppercase;color:var(--violet)}
+  .assume p{font-size:15.5px;color:var(--ink2);max-width:none}
+
+  .api{margin:0;overflow-x:auto;background:#1c1a24;border-radius:5px;padding:13px 15px;
+       font-family:var(--mono);font-size:12.2px;line-height:1.7;color:#d6d2e2}
+  .api b{color:#a795ff;font-weight:600}
+  .api i{color:#8d8799;font-style:normal}
+  .api u{color:#7fd4a8;text-decoration:none}
+
+  @media (max-width:560px){
+    .spec-row{grid-template-columns:1fr}
+    .spec-row > dt{padding-bottom:2px;background:none}
+    .spec-row > dd{padding-top:0}
+  }
+
   @media print{
     body{background:#fff;font-size:11pt}
     .top-in,.wrap{padding-left:0;padding-right:0;max-width:100%}
@@ -139,6 +188,26 @@
 
 <section>
   <h2><span class="n">02</span>What it is built with</h2>
+  <p>Every tool in the project, and the one job it does.</p>
+  <div class="stack">
+    <b>React 19</b><i>→</i><span>UI</span>
+    <b>Vite</b><i>→</i><span>Build and dev server</span>
+    <b>Redux Toolkit</b><i>→</i><span>The coin ledger</span>
+    <b>React Context</b><i>→</i><span>Cart and session state</span>
+    <b>Firebase</b><i>→</i><span>Prototype backend — anonymous auth and live sync</span>
+    <b>localStorage</b><i>→</i><span>Client-side persistence</span>
+    <b>Razorpay</b><i>→</i><span>Payment integration</span>
+    <b>lucide-react</b><i>→</i><span>Icons</span>
+    <b>GA4 via GTM</b><i>→</i><span>Analytics and funnels<em>planned</em></span>
+    <b>Clarity</b><i>→</i><span>User behaviour and session recordings<em>planned</em></span>
+    <b>GrowthBook</b><i>→</i><span>Feature flags and A/B experiments<em>planned</em></span>
+  </div>
+  <p>
+    The three marked <em>planned</em> are not wired up yet — they are the measurement stack proposed
+    in section 09. Everything above them is in the build today.
+  </p>
+
+  <h3>Why each one</h3>
   <div class="tw"><table>
     <thead><tr><th>Tool</th><th>Used for</th><th>Why this one</th></tr></thead>
     <tbody>
@@ -170,7 +239,105 @@
 </section>
 
 <section>
-  <h2><span class="n">03</span>My Astrologer</h2>
+  <h2><span class="n">03</span>System architecture</h2>
+  <p>
+    One picture for the whole product, so the five features below can be read as parts of a system
+    rather than five separate screens. Solid lines exist today; the API tier and the services under
+    it are what we build next.
+  </p>
+
+  <pre class="arch">                          Mobile web  ·  React 19 + Vite
+                                      |
+        +---------------+-------------+-------------+---------------+
+        |               |             |             |               |
+   My Astrologer    Continue      Shubh Kart    Categories        Coins
+        |               |             |             |               |
+        +---------------+------+------+-------------+---------------+
+                               |
+                TODAY: React state + localStorage  (no network)
+                               |
+                               v
+                    +----------------------+
+                    |     API gateway      |   &lt;-- to be built
+                    |   auth · rate limit  |
+                    +----------+-----------+
+                               |
+     +------------+------------+------------+--------------+
+     |            |            |            |              |
+     v            v            v            v              v
+  Identity   Consultation   Catalog &amp;     Ledger        Analytics
+  service      service        order       service        collector
+     |            |          service         |              |
+     v            v            |             v              v
+   users     consultations     v         coin_lots      GA4 · Clarity
+  sessions     messages      products     coin_spends    GrowthBook
+              user_sessions   orders      referrals
+                              payments
+                                 |
+                                 v
+                         Razorpay  ·  Push (FCM)</pre>
+
+  <h3>What each layer owns</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Layer</th><th>Owns</th><th>Today</th></tr></thead>
+    <tbody>
+      <tr><td>Screens (<code>pages/</code>)</td><td>Layout and navigation only</td><td>Built</td></tr>
+      <tr><td>Components</td><td>Rendering; no business rules, no network</td><td>Built</td></tr>
+      <tr><td>State (<code>state/</code>, <code>store/</code>)</td><td>Cart, sessions, coin ledger</td><td>In browser memory + localStorage</td></tr>
+      <tr><td>Rules (<code>data/</code>)</td><td>Caps, prices, eligibility — pure functions</td><td>Built, and reusable by the server unchanged</td></tr>
+      <tr><td>Adapters (<code>utils/</code>)</td><td>The only files that talk outward</td><td>Firebase + Razorpay only</td></tr>
+      <tr><td>API tier</td><td>Auth, validation, money, quotas</td><td>Not built</td></tr>
+      <tr><td>Data tier</td><td>Durable records</td><td>Not built</td></tr>
+    </tbody>
+  </table></div>
+  <p>
+    That fourth row is the one that makes the migration cheap. Because every rule is already a pure
+    function in <code>data/</code> — <code>maxRedeemable()</code>, <code>checkCredit()</code>,
+    <code>MAX_CONNECTS</code>, <code>FOLLOWUP_CALL_SECS</code> — the server can import the same file
+    and enforce identical numbers. There is no second copy of the rules to drift out of sync.
+  </p>
+
+  <h3>One request, before and after</h3>
+  <pre class="api"><i># today — nothing leaves the browser</i>
+tap Add  ->  CartContext.add(productId)  ->  useMemo recomputes totals  ->  re-render
+
+<i># after the API tier exists</i>
+tap Add  ->  <b>POST</b> <u>/v1/cart/items</u> {productId, qty}
+         ->  gateway: verify JWT, rate limit
+         ->  catalog service: check stock and price
+         ->  DB: upsert cart_items
+         &lt;-  200 {cart: {items, subtotal, giftUnlocked}}
+         ->  client renders the server total, never its own</pre>
+  <p>
+    The client stops being the source of truth for anything that costs money. It keeps deriving
+    display values, but the number it shows comes back from the server.
+  </p>
+
+  <h3>How to read each feature below</h3>
+  <p>
+    Every feature is written to the same seven-layer strip, so they can be compared directly and
+    picked up as work items: <strong>problem → user flow → frontend → API → data → events →
+    metric</strong>.
+  </p>
+</section>
+
+<section>
+  <h2><span class="n">04</span>My Astrologer</h2>
+
+  <div class="assume">
+    <span class="who">Assumption — flagged, not hidden</span>
+    <p>
+      <strong>I have never seen the astrologer panel.</strong> I have only used AstroLive as a
+      customer, so everything in this section is a proposal for what should sit inside that panel,
+      not a description of something that exists. The reasoning and the limits below stand on their
+      own; if the panel already works differently, this needs re-placing rather than re-thinking.
+    </p>
+    <p>
+      This is the one part of the document that needs a correction from someone on the supply side
+      before it is built.
+    </p>
+  </div>
+
   <p class="problem">
     A consultation happens once. The user asks, the astrologer answers, the session ends, and then
     nothing. There is no follow-up at all — so every relationship starts again from zero.
@@ -182,15 +349,6 @@
     menu gains <strong>My Users</strong> — the people they have already consulted — with three
     follow-up actions: pick the chat back up, ring them, or suggest a remedy from Shubh Kart.
   </p>
-
-  <div class="aside">
-    <span class="who">A note on this one</span>
-    <p>
-      I have never seen the astrologer panel, so I built this as a proposal for what should sit
-      inside it rather than a copy of something that exists. If the panel already works differently,
-      the idea still holds — it just needs to be placed there instead.
-    </p>
-  </div>
 
   <h3>Why it works</h3>
   <p>
@@ -218,6 +376,34 @@
     works: the limit lives in the data, not just in the button.
   </p>
 
+  <h3>Engineering HLD</h3>
+  <dl class="spec">
+    <div class="spec-row"><dt>User flow</dt><dd>Settings toggle → My Users → Connect → sheet → chat / call (2 min) / suggest → counter decremented</dd></div>
+    <div class="spec-row"><dt>Frontend</dt><dd><code>ConnectedUsersPage</code>, <code>CallPage</code>, <code>SuggestProductPage</code>, <code>BottomSheet</code>; quota in <code>SessionContext</code>, cap in <code>data/appData.js</code></dd></div>
+    <div class="spec-row"><dt>API</dt><dd><code>GET /astrologer/me/users</code> · <code>POST /astrologer/connects</code> · <code>POST /calls</code> · <code>POST /suggestions</code></dd></div>
+    <div class="spec-row"><dt>Data</dt><dd><code>consultations</code>, <code>astrologer_connects</code>, <code>calls</code>, <code>product_suggestions</code></dd></div>
+    <div class="spec-row"><dt>External</dt><dd>Telephony provider for the call, push for the follow-up message</dd></div>
+    <div class="spec-row"><dt>Events</dt><dd><code>astrologer_connect_used</code>, <code>followup_call_ended{duration_sec, capped}</code>, <code>product_suggested</code></dd></div>
+    <div class="spec-row metric"><dt>Metric</dt><dd>Paid sessions booked per follow-up, against block/report rate</dd></div>
+  </dl>
+
+  <pre class="api"><b>GET</b> <u>/v1/astrologer/me/users?cursor=&amp;limit=20</u>
+200 { users: [ { userId, name, rashi, lastMode, lastAt,
+                 consultations, connectsUsed, connectsLeft } ], next }
+
+<b>POST</b> <u>/v1/astrologer/connects</u>
+    { userId, mode: "chat" | "call" | "suggest" }
+200 { connectsLeft: 2 }
+409 { error: "connect_limit_reached" }     <i># server owns the cap, not the button</i>
+
+<b>POST</b> <u>/v1/calls</u>
+    { userId, kind: "followup" }
+200 { callId, maxDurationSec: 120 }        <i># server returns the cap it will enforce</i>
+
+<b>POST</b> <u>/v1/suggestions</u>
+    { userId, productId }
+200 { suggestionId }                       <i># becomes the attribution key for commission</i></pre>
+
   <div class="flow">
     <span class="step">Astrologer Mode on</span><span class="arrow">→</span>
     <span class="step">My Users</span><span class="arrow">→</span>
@@ -236,7 +422,7 @@
 </section>
 
 <section>
-  <h2><span class="n">04</span>Continue where you left</h2>
+  <h2><span class="n">05</span>Continue where you left</h2>
   <p class="problem">
     Every visit starts at a grid of astrologers. So people pick a different one each time, get the
     same question answered three different ways, and end up more confused than when they arrived.
@@ -275,6 +461,27 @@
     A list of ten just recreates the paralysis it was built to fix.
   </p>
 
+  <h3>Engineering HLD</h3>
+  <dl class="spec">
+    <div class="spec-row"><dt>User flow</dt><dd>Start a chat → session saved → return to Home → Resume at the top</dd></div>
+    <div class="spec-row"><dt>Frontend</dt><dd><code>ResumeSection</code> on <code>HomePage</code>; <code>startSession()</code> in <code>SessionContext</code>, LRU capped at 2</dd></div>
+    <div class="spec-row"><dt>API</dt><dd><code>GET /me/sessions?limit=2</code> · <code>POST /me/sessions</code> (upsert on chat or call start)</dd></div>
+    <div class="spec-row"><dt>Data</dt><dd><code>user_sessions(user_id, astrologer_id, mode, started_at, thread_id)</code>, unique on (user_id, astrologer_id)</dd></div>
+    <div class="spec-row"><dt>External</dt><dd>None</dd></div>
+    <div class="spec-row"><dt>Events</dt><dd><code>resume_card_shown</code>, <code>resume_card_tapped{astrologer_id, age_minutes}</code></dd></div>
+    <div class="spec-row metric"><dt>Metric</dt><dd>Repeat consultations with the same astrologer, and referrals naming an astrologer</dd></div>
+  </dl>
+
+  <pre class="api"><b>GET</b> <u>/v1/me/sessions?limit=2</u>
+200 { sessions: [ { astrologerId, mode, startedAt, threadId } ] }
+<i># ids only — the client joins against the live astrologer record,
+# so a stale rate or offline dot can never be served from cache</i>
+
+<b>POST</b> <u>/v1/me/sessions</u>
+    { astrologerId, mode, threadId }
+200 { ok: true }
+<i># upsert: same astrologer moves to the top instead of duplicating</i></pre>
+
   <div class="flow">
     <span class="step">User starts a chat</span><span class="arrow">→</span>
     <span class="step key">Saved on the device</span><span class="arrow">→</span>
@@ -295,7 +502,7 @@
 </section>
 
 <section>
-  <h2><span class="n">05</span>Shubh Kart recommendations</h2>
+  <h2><span class="n">06</span>Shubh Kart recommendations</h2>
   <p class="problem">
     The store is a flat grid with no recommendations at all. Someone who has just been told they
     have Shani dosh has to work out for themselves which of nine products relates to that.
@@ -326,6 +533,31 @@
     should reorder a shop, never shrink it.
   </p>
 
+  <h3>Engineering HLD</h3>
+  <dl class="spec">
+    <div class="spec-row"><dt>User flow</dt><dd>Intent chip narrows → rashi reorders → product sheet → cart → address → pay. Or: astrologer suggests → same cart</dd></div>
+    <div class="spec-row"><dt>Frontend</dt><dd><code>ShubhKartPage</code>, <code>IntentChips</code>, <code>RashiPicker</code>, <code>ProductCard/Sheet</code>; <code>CartContext</code> derives every total</dd></div>
+    <div class="spec-row"><dt>API</dt><dd><code>GET /products</code> · <code>POST /cart/items</code> · <code>POST /orders</code> · <code>POST /orders/:id/verify</code></dd></div>
+    <div class="spec-row"><dt>Data</dt><dd><code>products</code>, <code>product_targeting</code>, <code>carts</code>, <code>cart_items</code>, <code>orders</code>, <code>payments</code></dd></div>
+    <div class="spec-row"><dt>External</dt><dd>Razorpay — order creation and signature verification, both server-side</dd></div>
+    <div class="spec-row"><dt>Events</dt><dd><code>product_viewed</code>, <code>add_to_cart</code>, <code>order_placed</code>, <code>suggestion_purchased{suggestion_id}</code></dd></div>
+    <div class="spec-row metric"><dt>Metric</dt><dd>Shubh Kart revenue per consultation; attach rate on astrologer suggestions</dd></div>
+  </dl>
+
+  <pre class="api"><b>GET</b> <u>/v1/products?intent=peace&amp;rashi=mesha</u>
+200 { products: [ { id, name, price, oldPrice, rating, forYou: true } ] }
+<i># intent filters server-side, rashi only reorders — never hide the catalogue</i>
+
+<b>POST</b> <u>/v1/orders</u>
+    { addressId, deliveryDay, suggestionId? }   <i># suggestionId carries attribution</i>
+200 { orderId: "SK-...", razorpayOrderId, amount }
+
+<b>POST</b> <u>/v1/orders/:orderId/verify</u>
+    { razorpayPaymentId, razorpaySignature }
+200 { status: "paid" }
+<i># HMAC checked with the Razorpay SECRET, which never reaches the client.
+# Without this step a client can claim any payment succeeded.</i></pre>
+
   <div class="flow">
     <span class="step">Intent chip</span><span class="arrow">→</span>
     <span class="step">Narrows the list</span><span class="arrow">→</span>
@@ -355,7 +587,7 @@
 </section>
 
 <section>
-  <h2><span class="n">06</span>Categories by problem, and Life Coach</h2>
+  <h2><span class="n">07</span>Categories by problem, and Life Coach</h2>
   <p class="problem">
     The old tabs were All · Vedic · Tarot · Numerology. Nobody opens the app thinking "I need
     Numerology today." They open it thinking "will I get this job." We were labelling our method
@@ -403,6 +635,28 @@
     month, let the habit form, then charge monthly — that matches how people actually use it.
   </p>
 
+  <h3>Engineering HLD</h3>
+  <dl class="spec">
+    <div class="spec-row"><dt>User flow</dt><dd>Open Chat → pick a problem tab → filtered astrologers → chat. Empty state offers a reset</dd></div>
+    <div class="spec-row"><dt>Frontend</dt><dd><code>ChatTabs</code> (controlled), filter in <code>ChatPage</code>, <code>categoryChips()</code> on <code>AdvisorCard</code></dd></div>
+    <div class="spec-row"><dt>API</dt><dd><code>GET /categories</code> · <code>GET /astrologers?category=&amp;sort=</code> · <code>PUT /astrologers/:id/categories</code> (verified writes only)</dd></div>
+    <div class="spec-row"><dt>Data</dt><dd><code>categories</code>, <code>astrologer_categories(astrologer_id, category_id, source, confidence)</code> — max 3 rows per astrologer</dd></div>
+    <div class="spec-row"><dt>External</dt><dd>None</dd></div>
+    <div class="spec-row"><dt>Events</dt><dd><code>category_selected{category_id, results_count}</code>, <code>category_empty_state_shown</code></dd></div>
+    <div class="spec-row metric"><dt>Metric</dt><dd>Browse-to-chat conversion, and time to first chat</dd></div>
+  </dl>
+
+  <pre class="api"><b>GET</b> <u>/v1/astrologers?category=coach&amp;sort=rating&amp;online=true</u>
+200 { astrologers: [ { id, name, skills[], categories[], ratePerMin,
+                       rating, isOnline, isLive } ] }
+
+<b>PUT</b> <u>/v1/astrologers/:id/categories</u>          <i># ops / verified writes only</i>
+    { categories: ["career", "coach"], source: "verified" }
+200 { ok: true }
+422 { error: "too_many_categories", max: 3 }
+<i># the cap is what stops every astrologer claiming every category
+# and turning the filter back into decoration</i></pre>
+
   <div class="flow">
     <span class="step">Skills: Vedic · Tarot</span><span class="arrow">→</span>
     <span class="step key">Problems solved: Career · Life Coach</span><span class="arrow">→</span>
@@ -429,7 +683,7 @@
 </section>
 
 <section>
-  <h2><span class="n">07</span>Referrals, sharing and coins</h2>
+  <h2><span class="n">08</span>Referrals, sharing and coins</h2>
   <p class="problem">
     Paid installs are expensive. The cheapest real growth is one user telling another — but only if
     there is a reason to. And the trap on the other side is just as real: reward sharing carelessly
@@ -483,6 +737,41 @@
     spend. Gaming it costs more than it pays.
   </p>
 
+  <h3>Engineering HLD</h3>
+  <dl class="spec">
+    <div class="spec-row"><dt>User flow</dt><dd>Share a reading → friend completes it → coins credited → recharge → up to 10% paid in coins</dd></div>
+    <div class="spec-row"><dt>Frontend</dt><dd><code>CosmicSharePage</code>, <code>WalletPage</code>, <code>RechargePage</code>; ledger in <code>store/coinsSlice.js</code>, rules in <code>data/coins.js</code></dd></div>
+    <div class="spec-row"><dt>API</dt><dd><code>GET /me/coins</code> · <code>POST /recharge/quote</code> · <code>POST /recharge</code>. Awarding is server-internal, never client-callable</dd></div>
+    <div class="spec-row"><dt>Data</dt><dd><code>coin_lots</code>, <code>coin_spends</code>, <code>coin_dedupe</code>, <code>referrals</code>, <code>recharges</code></dd></div>
+    <div class="spec-row"><dt>External</dt><dd>Razorpay for the recharge payment; a daily job expires lots past 90 days</dd></div>
+    <div class="spec-row"><dt>Events</dt><dd><code>share_completed</code>, <code>coins_awarded{source}</code>, <code>coins_redeemed{coins, recharge_amount}</code></dd></div>
+    <div class="spec-row metric"><dt>Metric</dt><dd>Referred installs, and recharge frequency against margin per recharge</dd></div>
+  </dl>
+
+  <pre class="api"><b>GET</b> <u>/v1/me/coins</u>
+200 { balance: 240, expiringSoon: 15, history: [ ... ] }
+<i># read-only. The client can never write a balance.</i>
+
+<b>POST</b> <u>/v1/recharge/quote</u>
+    { amount: 500 }
+200 { maxRedeemableCoins: 500, discount: 50, payable: 450 }
+<i># the 10% cap is recomputed server-side from the amount, every time</i>
+
+<b>POST</b> <u>/v1/recharge</u>
+    { amount: 500, useCoins: true }
+    Idempotency-Key: &lt;uuid&gt;                 <i># a retry must not double-charge</i>
+200 { rechargeId, razorpayOrderId, coinsApplied: 500 }
+<i># coins are burned in the SAME transaction as the payment capture,
+# so a failed payment cannot silently eat the balance</i>
+
+<i># awarding — internal only, triggered by a verified event</i>
+onRevealComplete(roomCode):
+  read room server-side, require status == "complete"
+  require b.uid != a.uid                    <i># no self-referral</i>
+  require not exists coin_dedupe(uid, partnerUid)
+  apply dailyCap 3, lifetimeCap 100         <i># same checkCredit() the UI uses</i>
+  insert coin_lot(+5, expiresAt = now + 90d)</pre>
+
   <div class="flow">
     <span class="step">Share the link</span><span class="arrow">→</span>
     <span class="step">Friend completes it</span><span class="arrow">→</span>
@@ -512,7 +801,7 @@
 </section>
 
 <section>
-  <h2><span class="n">08</span>How we would know if any of this worked</h2>
+  <h2><span class="n">09</span>How we would know if any of this worked</h2>
   <p>
     Every feature above is a hypothesis. None of them should stay in the product just because they
     sound reasonable — including mine. Here is how I would measure them.
@@ -554,7 +843,7 @@
 </section>
 
 <section>
-  <h2><span class="n">09</span>What moves to a backend, in order</h2>
+  <h2><span class="n">10</span>What moves to a backend, in order</h2>
   <div class="tw"><table>
     <thead><tr><th>#</th><th>Feature</th><th>What it needs</th></tr></thead>
     <tbody>
@@ -570,6 +859,66 @@
     The code was written with this move in mind. The coins ledger in particular has one clearly
     marked place where saving happens, so switching it to a server is a swap rather than a rewrite.
   </p>
+</section>
+
+<section>
+  <h2><span class="n">11</span>How an SDE1 picks this up</h2>
+  <p>
+    Everything above is designed to be built in slices, by one engineer, without a rewrite between
+    slices. This is the order and the shape of the work.
+  </p>
+
+  <h3>Build order — each milestone ships on its own</h3>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Milestone</th><th>Done when</th></tr></thead>
+    <tbody>
+      <tr><td class="num">M0</td><td>Phone OTP auth + a <code>users</code> table; issue and verify JWTs at the gateway</td><td>Every later endpoint can identify the caller. Nothing else starts before this</td></tr>
+      <tr><td class="num">M1</td><td>Coin ledger service — <code>coin_lots</code>, <code>coin_spends</code>, <code>coin_dedupe</code>, expiry job</td><td>A client write to a balance is rejected; caps and dedupe hold under a replayed request</td></tr>
+      <tr><td class="num">M2</td><td>Recharge with transactional redeem + idempotency key</td><td>A forced payment failure mid-redeem leaves the balance untouched</td></tr>
+      <tr><td class="num">M3</td><td>Catalog and orders; move Razorpay order creation and signature verify server-side</td><td>A forged payment callback is rejected</td></tr>
+      <tr><td class="num">M4</td><td>Consultation service — history, connect quota, 2-minute call cap</td><td>A 4th connect returns <code>409</code>; a follow-up call is cut at 120s server-side</td></tr>
+      <tr><td class="num">M5</td><td>Astrologer profiles with verified categories, max 3</td><td>A 4th category returns <code>422</code></td></tr>
+      <tr><td class="num">M6</td><td>Analytics: GTM container, GA4 events, Clarity, GrowthBook SDK</td><td>All eight events fire with correct properties; one flag can dark-launch a feature</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Slicing a milestone into tickets</h3>
+  <p>
+    Each milestone breaks the same way, and every ticket should be a day or less:
+  </p>
+  <ol>
+    <li><strong>Schema + migration</strong> — tables, indexes, constraints. Put the rule in a constraint wherever the database can hold it (unique on <code>coin_dedupe</code>, max-3 check on categories) so a bug in the service cannot corrupt data.</li>
+    <li><strong>Service function with the rule</strong> — import the existing pure function from <code>data/</code>. Do not rewrite <code>maxRedeemable()</code> or <code>checkCredit()</code> on the server; that is how the two copies drift apart.</li>
+    <li><strong>Endpoint</strong> — validate input, authorise, call the service, map errors to status codes.</li>
+    <li><strong>Swap the client</strong> — replace one context or slice with a fetch. The component tree should not change; if it does, the boundary was drawn in the wrong place.</li>
+    <li><strong>Events</strong> — fire the analytics event from the same place the state changes, not from a click handler, so it cannot report a success that did not happen.</li>
+    <li><strong>Tests</strong> — the abuse cases, not the happy path. Self-referral, replayed award, 4th connect, payment failure mid-redeem, ₹99 recharge.</li>
+  </ol>
+
+  <h3>Where to change the client</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Replace this</th><th>With</th></tr></thead>
+    <tbody>
+      <tr><td><code>store/index.js</code> localStorage subscriber</td><td>Sync against the ledger API. It is already commented as the seam</td></tr>
+      <tr><td><code>SessionContext</code> reads</td><td><code>GET /me/sessions</code>, <code>GET /astrologer/me/users</code></td></tr>
+      <tr><td><code>CartContext</code> local totals</td><td>Server cart; keep the <code>useMemo</code> for display only</td></tr>
+      <tr><td>Static arrays in <code>data/appData.js</code></td><td><code>GET /products</code>, <code>GET /astrologers</code></td></tr>
+      <tr><td>Route string switch in <code>App.jsx</code></td><td><code>react-router</code>, once URLs matter for sharing and analytics</td></tr>
+    </tbody>
+  </table></div>
+  <p>
+    <code>data/coins.js</code> and the caps in <code>data/appData.js</code> are the exception —
+    they do not get replaced. They get imported by the server.
+  </p>
+
+  <h3>Conventions to keep</h3>
+  <ul>
+    <li><strong>Rules live in <code>data/</code>, as pure functions.</strong> If a rule needs app state to run, it is in the wrong file.</li>
+    <li><strong>Persist ids, join at read time.</strong> Never cache a whole product or astrologer object.</li>
+    <li><strong>Derive, never store.</strong> Totals, caps, counters are all recomputed. Two copies of a number are two chances to be wrong.</li>
+    <li><strong>Registries over branches.</strong> A new coin source, connect action, or category is a data entry.</li>
+    <li><strong>The server owns anything that costs money or limits a user.</strong> The client may display a cap; it must never be the thing enforcing it.</li>
+  </ul>
 </section>
 
 <footer>
