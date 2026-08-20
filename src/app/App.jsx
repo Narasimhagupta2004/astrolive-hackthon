@@ -19,6 +19,7 @@ import { CosmicStartPage } from '../pages/CosmicStartPage';
 import { CosmicSharePage } from '../pages/CosmicSharePage';
 import { CosmicJoinPage } from '../pages/CosmicJoinPage';
 import { CosmicRevealPage } from '../pages/CosmicRevealPage';
+import { MuhuratPage } from '../pages/MuhuratPage';
 import { CartProvider } from '../state/CartContext';
 import { SessionProvider } from '../state/SessionContext';
 import { CosmicProvider } from '../state/CosmicContext';
@@ -70,6 +71,7 @@ export function App() {
   else if (route === 'cc-share') page = <CosmicSharePage onNavigate={navigate} />;
   else if (route === 'cc-join') page = <CosmicJoinPage onNavigate={navigate} />;
   else if (route === 'cc-reveal') page = <CosmicRevealPage onNavigate={navigate} />;
+  else if (route === 'muhurat') page = <MuhuratPage onNavigate={navigate} />;
   else page = <HomePage onNavigate={navigate} />;
 
   return (
