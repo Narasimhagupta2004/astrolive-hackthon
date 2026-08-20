@@ -3190,3 +3190,90 @@ a.setting-row { text-decoration: none; }
   justify-content: center;
 }
 .muhurat-powered svg { color: #ffca3a; }
+
+/* Free-ask quota, stated before the ask is spent rather than after. */
+.muhurat-quota {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: -4px 0 4px;
+  padding: 8px 13px;
+  border-radius: 10px;
+  border: 1px solid #d9cff0;
+  background: #f4f0ff;
+  color: #4a2f9e;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.muhurat-quota.spent {
+  border-color: #f0cfb8;
+  background: #fdf0e6;
+  color: #9d5a24;
+}
+
+.muhurat-quota.plus {
+  border-color: #cfe0d0;
+  background: #eef7ef;
+  color: #1a6f55;
+}
+
+/* Coins credited by the free reading. */
+.muhurat-earned {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid #cfe9dc;
+  background: #eef8f3;
+  color: #1a6f55;
+}
+
+.muhurat-earned > svg { flex: none; }
+.muhurat-earned span { flex: 1; display: flex; flex-direction: column; }
+.muhurat-earned b { font-size: 13.5px; }
+.muhurat-earned small { font-size: 11.5px; color: #3d7a66; margin-top: 1px; }
+
+.muhurat-earned button {
+  flex: none;
+  border: 1px solid #1a6f55;
+  background: none;
+  color: #1a6f55;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 5px 11px;
+  cursor: pointer;
+}
+
+/* Subscription sheet */
+.plan-card {
+  border: 1px solid #d9cff0;
+  background: #f7f4ff;
+  border-radius: 14px;
+  padding: 15px 17px;
+  margin-bottom: 14px;
+}
+
+.plan-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 10px; }
+.plan-price b { font-size: 30px; color: #2a1030; }
+.plan-price span { font-size: 13px; color: var(--muted); }
+
+.plan-perks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.plan-perks li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: #3c2a44;
+}
+.plan-perks svg { color: #6b46eb; flex: none; }
+
+.plan-note {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 8px 0 4px;
+}

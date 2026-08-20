@@ -13,6 +13,18 @@ export const REFERRAL_BONUS = 500;        // = Rs 50, on a referred user's first
 // against a Rs 100 recharge would invert the economics.
 export const REFERRAL_QUALIFY_RECHARGE = 200;
 
+// Muhurat AI: one free reading, ever. Taking it credits coins, and coins only
+// convert against a recharge of Rs 100+ — so the reward costs nothing until it
+// has already pulled in ten times its value. The second ask needs a plan.
+export const MUHURAT_FREE_LIMIT = 1;
+export const MUHURAT_BONUS = 25;          // = Rs 2.50, one time
+export const MUHURAT_PLAN_PRICE = 99;     // Rs, unlimited muhurats
+export const MUHURAT_PLAN_DAYS = 30;      // one term per payment, no auto-renew
+// Paid terms credit coins too. Worth Rs 10 against a plan that cost Rs 99 and
+// only redeemable on a further Rs 100+ recharge, so it pulls the next spend
+// forward instead of discounting this one.
+export const MUHURAT_PLAN_BONUS = 100;    // = Rs 10, per paid term
+
 // Redeeming — the 10% cap is the main protection on margin.
 export const REDEEM_MAX_PCT = 0.10;
 export const REDEEM_MIN_RECHARGE = 100;

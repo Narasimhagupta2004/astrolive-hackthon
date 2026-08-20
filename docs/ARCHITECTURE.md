@@ -26,6 +26,21 @@ it is web-specific.
 customer, so for the first feature I had to guess what an astrologer's panel looks like. I have
 marked that assumption clearly rather than hiding it.
 
+### Trying it yourself
+
+Razorpay runs in **test mode**, so nothing is charged. Two places take a payment: Shubh Kart
+checkout, and AstroLive Plus on the Muhurat page. Use this card for both.
+
+```text
+Card    4386 2894 0766 0153
+Expiry  any future date      # e.g. 12 / 30
+CVV     any 3 digits         # e.g. 123
+OTP     any digits           # the test gateway accepts anything
+```
+
+No real card works in test mode and no real card should be entered. To reset the demo to a fresh
+user, clear `astro:coins` and `astro:subscription` from the browser's local storage.
+
 ---
 
 ## 02 · What it is built with
@@ -39,6 +54,7 @@ Redux Toolkit   ->  The coin ledger
 React Context   ->  Cart and session state
 Firebase        ->  Prototype backend — anonymous auth and live sync
 localStorage    ->  Client-side persistence
+Google Gemini   ->  Muhurat AI answers, with a rules-engine fallback
 Razorpay        ->  Payment integration
 lucide-react    ->  Icons
 GA4 via GTM     ->  Analytics and funnels                    [planned]
@@ -47,7 +63,7 @@ GrowthBook      ->  Feature flags and A/B experiments        [planned]
 ```
 
 The three marked `[planned]` are not wired up yet — they are the measurement stack proposed in
-section 09. Everything above them is in the build today.
+section 10. Everything above them is in the build today.
 
 ### Why each one
 
@@ -58,7 +74,8 @@ section 09. Everything above them is in the build today.
 | Redux Toolkit | The coins ledger only | Coins turn into money, so they need stricter handling than the rest |
 | React Context | Cart, recent sessions | Lighter than Redux, right for data that is short-lived |
 | Firebase | Live sync for Cosmic Chemistry | Real-time updates with no server to run |
-| Razorpay | Checkout in Shubh Kart | Standard Indian gateway; loads only at checkout |
+| Google Gemini | Muhurat AI | Grounded on our own panchang, so it explains rather than invents. Optional — without a key the rules engine answers |
+| Razorpay | Shubh Kart checkout and AstroLive Plus | Standard Indian gateway; loads only at checkout |
 | lucide-react | Icons | One consistent set, ships only the icons used |
 
 ### How the folders are laid out
@@ -575,7 +592,90 @@ show coins in the profile but not let them reduce a payment. The full write-up i
 
 ---
 
-## 09 · How we would know if any of this worked
+## 09 · Muhurat AI
+
+> "When should I do this?" is the single most common question in the category, and answering it
+> properly means reading a panchang — which almost nobody can do. So people either guess, or pay for
+> a full consultation to get one date.
+
+### What I built
+
+Pick what you are planning — signing a contract, buying property, a wedding — and get three
+auspicious windows in the next 14 days, each with the nakshatra, the hora, the tithi, and the Rahu
+Kaal it avoids. Answers arrive in seconds instead of a booked call.
+
+**The first reading is free and credits 25 coins.** The second asks for **AstroLive Plus** — ₹99 for
+30 days, which also credits 100 coins. One payment, one term, no auto-renewal.
+
+### Why it works
+
+This is the cheapest possible first taste of the product. It answers a real question with no signup,
+no wallet balance, and no waiting for an astrologer to come online — and it ends with coins sitting
+in a wallet that are only worth anything on a recharge. The free reading is a demonstration that
+pays for its own follow-up.
+
+The paywall is placed where intent is highest: the user has already had one useful answer and is
+typing a second question. That is a far better moment to ask for ₹99 than a banner on the home screen.
+
+Both rewards are attached to something: the free 25 coins to a completed reading, the 100 coins to a
+payment we already took. Neither can be farmed — the free one is deduped once per account, the paid
+one on the payment id.
+
+### Engineering HLD
+
+| Layer | |
+|---|---|
+| **User flow** | Pick intent → free reading → 25 coins → second ask → paywall → pay ₹99 → 30 days + 100 coins |
+| **Frontend** | `MuhuratPage`, `IntentGrid`, `MuhuratCard`; gate is `freeMuhuratUsed && !isSubscribed`, both read from Redux |
+| **API** | `POST /muhurats` · `GET /me/entitlements` · `POST /subscriptions` |
+| **Data** | `muhurat_requests`, `subscriptions`, `coin_lots`, plus the panchang corpus |
+| **External** | Google Gemini, grounded on our panchang JSON; Razorpay for the plan |
+| **Events** | `muhurat_requested{intent}`, `muhurat_paywall_shown`, `plan_purchased{price}` |
+| **Metric** | Free-to-paid conversion, and recharge rate among users holding muhurat coins |
+
+```text
+POST /v1/muhurats
+     { intent: "new_job", intentText?, rashi: "mesha" }
+200  { windows: [ { date, from, to, nakshatra, hora, tithi,
+                    avoidsRahuKaal, why } ], poweredBy }
+402  { error: "quota_exhausted", plan: { price: 99, days: 30 } }
+# the free-ask quota is counted server-side — the client cannot grant itself one
+
+POST /v1/subscriptions
+     { plan: "plus", razorpayPaymentId }
+     Idempotency-Key: <payment id>
+200  { expiresAt, coinsAwarded: 100 }
+# term and coin bonus commit together, keyed on the payment, so a replayed call
+# extends nothing and credits nothing twice
+```
+
+### How the AI is kept honest today
+
+The model is never asked to know astrology. We compute a panchang table ourselves and pass it in as
+JSON; Gemini may only select and explain windows that already exist in that table, and the response
+shape is validated before it renders. If the call fails, times out, or comes back malformed, the
+local rules engine answers instead and the footer says so. A missing API key is just another
+fallback path, not an outage.
+
+### Next — a RAG model over verified sources
+
+Grounding on our own table is safe but narrow: the answer can only ever be as good as the panchang we
+generated. The next step is retrieval over sources an astrologer would actually accept — digitised
+panchang almanacs, the classical muhurta texts (*Muhurta Chintamani*, *Kalaprakasika*,
+*Brihat Samhita*), and our own senior astrologers' recorded rulings.
+
+Retrieve the relevant passages first, then let the model answer **only** from what was retrieved,
+citing which text each window came from. Two things change: an astrologer can audit an answer
+instead of trusting it, and "Thursday 06:00–07:30, per Muhurta Chintamani on Guru hora" is a
+materially different product from an unsourced date. It also fixes freshness — a new panchang year
+becomes a re-index, not a prompt rewrite.
+
+The guardrail stays either way: the model may never emit a date that was not in the retrieved set,
+and anything that fails validation falls back to the rules engine rather than reaching the user.
+
+---
+
+## 10 · How we would know if any of this worked
 
 Every feature above is a hypothesis. None of them should stay in the product just because they sound
 reasonable — including mine. Here is how I would measure them.
@@ -616,7 +716,7 @@ Six of those eight are things we currently cannot see at all.
 
 ---
 
-## 10 · What moves to a backend, in order
+## 11 · What moves to a backend, in order
 
 | # | Feature | What it needs |
 |---|---|---|
@@ -626,6 +726,7 @@ Six of those eight are things we currently cannot see at all.
 | 4 | My Astrologer | Real consultation records, server-side connect quota and call cap |
 | 5 | Continue where you left | History on the account so it survives a new phone |
 | 6 | Categories | Verified category assignment on astrologer profiles |
+| 7 | Muhurat AI | Server-side free-ask quota and plan entitlement; the Gemini key moves off the client |
 
 The code was written with this move in mind. The coins ledger in particular has one clearly marked
 place where saving happens ([`store/index.js`](../src/store/index.js)), so switching it to a server
@@ -633,7 +734,7 @@ is a swap rather than a rewrite.
 
 ---
 
-## 11 · How an SDE1 picks this up
+## 12 · How an SDE1 picks this up
 
 Everything above is designed to be built in slices, by one engineer, without a rewrite between
 slices. This is the order and the shape of the work.

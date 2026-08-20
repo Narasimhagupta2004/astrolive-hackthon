@@ -1,7 +1,7 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import {
   REVEAL_BONUS, REVEAL_DAILY_CAP, REVEAL_LIFETIME_CAP, REFERRAL_BONUS,
-  EXPIRY_MS, maxRedeemable
+  MUHURAT_BONUS, MUHURAT_FREE_LIMIT, MUHURAT_PLAN_BONUS, EXPIRY_MS, maxRedeemable
 } from '../data/coins';
 
 /**
@@ -23,6 +23,15 @@ export const COIN_SOURCES = {
     dedupe: true
   },
   referral: { label: 'Referral bonus', coins: REFERRAL_BONUS },
+  muhurat: {
+    label: 'Muhurat AI reward',
+    coins: MUHURAT_BONUS,
+    lifetimeCap: MUHURAT_BONUS * MUHURAT_FREE_LIMIT,
+    dedupe: true
+  },
+  // No lifetime cap: every genuine paid term earns. The dedupe key is the
+  // payment id, so a replayed dispatch of the same payment credits once.
+  plan: { label: 'Plus subscription bonus', coins: MUHURAT_PLAN_BONUS, dedupe: true },
   promo: { label: 'Promotional credit' },
   support: { label: 'Support adjustment' }
 };
@@ -153,3 +162,14 @@ export const selectHistory = createSelector([selectCoins], (c) => {
 });
 
 export const selectMaxRedeemable = (rupees) => (s) => maxRedeemable(rupees, selectBalance(s));
+
+/**
+ * Free muhurats already taken. Derived from the ledger rather than tracked in
+ * its own counter: crediting the reward and spending the free ask are the same
+ * event, so a second source of truth could only ever disagree with this one.
+ */
+export const selectMuhuratsUsed = (s) =>
+  Math.round((s.coins.earnedBySource.muhurat || 0) / MUHURAT_BONUS);
+
+/** Free allowance only — a subscription is a separate slice, checked alongside. */
+export const selectFreeMuhuratUsed = (s) => selectMuhuratsUsed(s) >= MUHURAT_FREE_LIMIT;

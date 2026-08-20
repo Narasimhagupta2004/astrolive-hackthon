@@ -184,6 +184,21 @@
     AstroLive as a customer, so for the first feature I had to guess what an astrologer's panel
     looks like. I have marked that assumption clearly rather than hiding it.
   </p>
+
+  <h3>Trying it yourself</h3>
+  <p>
+    Razorpay runs in <strong>test mode</strong>, so nothing is charged. Two places take a payment:
+    Shubh Kart checkout, and AstroLive Plus on the Muhurat page. Use this card for both.
+  </p>
+  <pre class="api"><b>Card</b>    <u>4386 2894 0766 0153</u>
+<b>Expiry</b>  any future date      <i># e.g. 12 / 30</i>
+<b>CVV</b>     any 3 digits         <i># e.g. 123</i>
+<b>OTP</b>     any digits           <i># the test gateway accepts anything</i></pre>
+  <p>
+    No real card works in test mode and no real card should be entered. To reset the demo to a fresh
+    user, clear <code>astro:coins</code> and <code>astro:subscription</code> from the browser's local
+    storage.
+  </p>
 </section>
 
 <section>
@@ -196,6 +211,7 @@
     <b>React Context</b><i>→</i><span>Cart and session state</span>
     <b>Firebase</b><i>→</i><span>Prototype backend — anonymous auth and live sync</span>
     <b>localStorage</b><i>→</i><span>Client-side persistence</span>
+    <b>Google Gemini</b><i>→</i><span>Muhurat AI answers, with a local rules-engine fallback</span>
     <b>Razorpay</b><i>→</i><span>Payment integration</span>
     <b>lucide-react</b><i>→</i><span>Icons</span>
     <b>GA4 via GTM</b><i>→</i><span>Analytics and funnels<em>planned</em></span>
@@ -204,7 +220,7 @@
   </div>
   <p>
     The three marked <em>planned</em> are not wired up yet — they are the measurement stack proposed
-    in section 09. Everything above them is in the build today.
+    in section 10. Everything above them is in the build today.
   </p>
 
   <h3>Why each one</h3>
@@ -216,7 +232,8 @@
       <tr><td>Redux Toolkit</td><td>The coins ledger only</td><td>Coins turn into money, so they need stricter handling than the rest</td></tr>
       <tr><td>React Context</td><td>Cart, recent sessions</td><td>Lighter than Redux, right for data that is short-lived</td></tr>
       <tr><td>Firebase</td><td>Live sync for Cosmic Chemistry</td><td>Real-time updates with no server to run</td></tr>
-      <tr><td>Razorpay</td><td>Checkout in Shubh Kart</td><td>Standard Indian gateway; loads only at checkout</td></tr>
+      <tr><td>Google Gemini</td><td>Muhurat AI</td><td>Grounded on our own panchang, so it explains rather than invents. Optional — without a key the rules engine answers</td></tr>
+      <tr><td>Razorpay</td><td>Shubh Kart checkout and AstroLive Plus</td><td>Standard Indian gateway; loads only at checkout</td></tr>
       <tr><td>lucide-react</td><td>Icons</td><td>One consistent set, ships only the icons used</td></tr>
     </tbody>
   </table></div>
@@ -801,7 +818,102 @@ onRevealComplete(roomCode):
 </section>
 
 <section>
-  <h2><span class="n">09</span>How we would know if any of this worked</h2>
+  <h2><span class="n">09</span>Muhurat AI</h2>
+  <p class="problem">
+    "When should I do this?" is the single most common question in the category, and answering it
+    properly means reading a panchang — which almost nobody can do. So people either guess, or pay
+    for a full consultation to get one date.
+  </p>
+
+  <h3>What I built</h3>
+  <p>
+    Pick what you are planning — signing a contract, buying property, a wedding — and get three
+    auspicious windows in the next 14 days, each with the nakshatra, the hora, the tithi, and the
+    Rahu Kaal it avoids. Answers arrive in seconds instead of a booked call.
+  </p>
+  <p>
+    <strong>The first reading is free and credits 25 coins.</strong> The second asks for
+    <strong>AstroLive Plus</strong> — ₹99 for 30 days, which also credits 100 coins. One payment,
+    one term, no auto-renewal.
+  </p>
+
+  <h3>Why it works</h3>
+  <p>
+    This is the cheapest possible first taste of the product. It answers a real question with no
+    signup, no wallet balance, and no waiting for an astrologer to come online — and it ends with
+    coins sitting in a wallet that are only worth anything on a recharge. The free reading is a
+    demonstration that pays for its own follow-up.
+  </p>
+  <p>
+    The paywall is placed where intent is highest: the user has already had one useful answer and is
+    typing a second question. That is a far better moment to ask for ₹99 than a banner on the home
+    screen.
+  </p>
+  <p>
+    Both rewards are attached to something: the free 25 coins to a completed reading, the 100 coins
+    to a payment we already took. Neither can be farmed — the free one is deduped once per account,
+    the paid one on the payment id.
+  </p>
+
+  <h3>Engineering HLD</h3>
+  <dl class="spec">
+    <div class="spec-row"><dt>User flow</dt><dd>Pick intent → free reading → 25 coins → second ask → paywall → pay ₹99 → 30 days + 100 coins</dd></div>
+    <div class="spec-row"><dt>Frontend</dt><dd><code>MuhuratPage</code>, <code>IntentGrid</code>, <code>MuhuratCard</code>; gate is <code>freeMuhuratUsed &amp;&amp; !isSubscribed</code>, both read from Redux</dd></div>
+    <div class="spec-row"><dt>API</dt><dd><code>POST /muhurats</code> · <code>GET /me/entitlements</code> · <code>POST /subscriptions</code></dd></div>
+    <div class="spec-row"><dt>Data</dt><dd><code>muhurat_requests</code>, <code>subscriptions</code>, <code>coin_lots</code>, plus the panchang corpus</dd></div>
+    <div class="spec-row"><dt>External</dt><dd>Google Gemini, grounded on our panchang JSON; Razorpay for the plan</dd></div>
+    <div class="spec-row"><dt>Events</dt><dd><code>muhurat_requested{intent}</code>, <code>muhurat_paywall_shown</code>, <code>plan_purchased{price}</code></dd></div>
+    <div class="spec-row metric"><dt>Metric</dt><dd>Free-to-paid conversion, and recharge rate among users holding muhurat coins</dd></div>
+  </dl>
+
+  <pre class="api"><b>POST</b> <u>/v1/muhurats</u>
+    { intent: "new_job", intentText?, rashi: "mesha" }
+200 { windows: [ { date, from, to, nakshatra, hora, tithi,
+                   avoidsRahuKaal, why } ], poweredBy }
+402 { error: "quota_exhausted", plan: { price: 99, days: 30 } }
+<i># the free-ask quota is counted server-side — the client cannot grant itself one</i>
+
+<b>POST</b> <u>/v1/subscriptions</u>
+    { plan: "plus", razorpayPaymentId }
+    Idempotency-Key: &lt;payment id&gt;
+200 { expiresAt, coinsAwarded: 100 }
+<i># term and coin bonus commit together, keyed on the payment, so a replayed
+# call extends nothing and credits nothing twice</i></pre>
+
+  <h3>How the AI is kept honest today</h3>
+  <p>
+    The model is never asked to know astrology. We compute a panchang table ourselves and pass it in
+    as JSON; Gemini may only select and explain windows that already exist in that table, and the
+    response shape is validated before it renders. If the call fails, times out, or comes back
+    malformed, the local rules engine answers instead and the footer says so. A missing API key is
+    just another fallback path, not an outage.
+  </p>
+
+  <div class="next"><span class="tag">Next — a RAG model over verified sources</span>
+    <p>
+      Grounding on our own table is safe but narrow: the answer can only ever be as good as the
+      panchang we generated. The next step is retrieval over sources an astrologer would actually
+      accept — digitised panchang almanacs, the classical muhurta texts
+      (<em>Muhurta Chintamani</em>, <em>Kalaprakasika</em>, <em>Brihat Samhita</em>), and our own
+      senior astrologers' recorded rulings.
+    </p>
+    <p>
+      Retrieve the relevant passages first, then let the model answer <strong>only</strong> from what
+      was retrieved, citing which text each window came from. Two things change: an astrologer can
+      audit an answer instead of trusting it, and "Thursday 06:00–07:30, per Muhurta Chintamani on
+      Guru hora" is a materially different product from an unsourced date. It also fixes freshness —
+      a new panchang year becomes a re-index, not a prompt rewrite.
+    </p>
+    <p>
+      The guardrail stays either way: the model may never emit a date that was not in the retrieved
+      set, and anything that fails validation falls back to the rules engine rather than reaching the
+      user.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">10</span>How we would know if any of this worked</h2>
   <p>
     Every feature above is a hypothesis. None of them should stay in the product just because they
     sound reasonable — including mine. Here is how I would measure them.
@@ -843,7 +955,7 @@ onRevealComplete(roomCode):
 </section>
 
 <section>
-  <h2><span class="n">10</span>What moves to a backend, in order</h2>
+  <h2><span class="n">11</span>What moves to a backend, in order</h2>
   <div class="tw"><table>
     <thead><tr><th>#</th><th>Feature</th><th>What it needs</th></tr></thead>
     <tbody>
@@ -853,6 +965,7 @@ onRevealComplete(roomCode):
       <tr><td class="num">4</td><td>My Astrologer</td><td>Real consultation records, server-side connect quota and call cap</td></tr>
       <tr><td class="num">5</td><td>Continue where you left</td><td>History on the account so it survives a new phone</td></tr>
       <tr><td class="num">6</td><td>Categories</td><td>Verified category assignment on astrologer profiles</td></tr>
+      <tr><td class="num">7</td><td>Muhurat AI</td><td>Server-side free-ask quota and plan entitlement; the Gemini key moves off the client</td></tr>
     </tbody>
   </table></div>
   <p>
@@ -862,7 +975,7 @@ onRevealComplete(roomCode):
 </section>
 
 <section>
-  <h2><span class="n">11</span>How an SDE1 picks this up</h2>
+  <h2><span class="n">12</span>How an SDE1 picks this up</h2>
   <p>
     Everything above is designed to be built in slices, by one engineer, without a rewrite between
     slices. This is the order and the shape of the work.

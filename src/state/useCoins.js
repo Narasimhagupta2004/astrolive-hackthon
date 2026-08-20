@@ -1,7 +1,8 @@
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import {
   credited, spent, awardCleared, coinsReset,
-  selectBalance, selectExpiringSoon, selectHistory, selectLastAward, checkCredit
+  selectBalance, selectExpiringSoon, selectHistory, selectLastAward,
+  selectFreeMuhuratUsed, checkCredit
 } from '../store/coinsSlice';
 import { maxRedeemable } from '../data/coins';
 
@@ -17,6 +18,7 @@ export function useCoins() {
   const expiringSoon = useSelector(selectExpiringSoon);
   const history = useSelector(selectHistory);
   const lastAward = useSelector(selectLastAward);
+  const freeMuhuratUsed = useSelector(selectFreeMuhuratUsed);
 
   const credit = ({ source, coins, ref, dedupeKey, selfKey }) => {
     if (selfKey && dedupeKey && selfKey === dedupeKey) return { ok: false, reason: 'self-referral' };
@@ -31,10 +33,15 @@ export function useCoins() {
     expiringSoon,
     history,
     lastAward,
+    freeMuhuratUsed,
     credit,
     awardReveal: (partnerUid, ref, selfUid) =>
       credit({ source: 'reveal', ref, dedupeKey: partnerUid, selfKey: selfUid }),
     awardReferral: (ref) => credit({ source: 'referral', ref }),
+    // One free muhurat, ever — the dedupe key is fixed so a repeat cannot pay out.
+    awardMuhurat: (ref) => credit({ source: 'muhurat', ref, dedupeKey: 'muhurat:free' }),
+    // Deduped on the payment id, so each paid term earns exactly once.
+    awardPlan: (paymentId, ref) => credit({ source: 'plan', ref, dedupeKey: paymentId }),
     spend: (coins, ref) => {
       if (!coins || coins <= 0) return { ok: false, reason: 'nothing-to-spend' };
       if (coins > balance) return { ok: false, reason: 'insufficient' };
