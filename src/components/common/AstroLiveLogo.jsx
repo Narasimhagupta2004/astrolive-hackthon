@@ -1,7 +1,3 @@
-// Ringed-planet mark from the AstroLive brand book (section 02), drawn as SVG so
-// it stays crisp at any size and uses the palette values directly. The ring is
-// split into back/front halves either side of the planet to keep the Saturn
-// overlap; the planet is deliberately near-Obsidian with an indigo sheen.
 export function AstroLiveLogo({ compact = false }) {
   return (
     <div className={`astro-logo${compact ? ' compact' : ''}`} aria-label="AstroLive">

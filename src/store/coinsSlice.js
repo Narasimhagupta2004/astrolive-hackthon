@@ -127,8 +127,6 @@ const coinsSlice = createSlice({
 export const { credited, spent, awardCleared, coinsReset } = coinsSlice.actions;
 export default coinsSlice.reducer;
 
-/* ---------- selectors ---------- */
-
 const selectCoins = (s) => s.coins;
 export const selectLots = (s) => s.coins.lots;
 export const selectLastAward = (s) => s.coins.lastAward;
