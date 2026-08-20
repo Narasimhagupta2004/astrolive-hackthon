@@ -5,7 +5,7 @@ import { BottomNav } from '../components/layout/BottomNav';
 import { useSession } from '../state/SessionContext';
 
 // Served from public/, so it is a plain static file in dev and in the build.
-const HLD_DOC = '/astrolive-architecture.html';
+const HLD_DOC = '/AstroLive-HLD.pdf';
 
 const rows = [
   { icon: Languages, label: 'Language & Activity' },
@@ -49,7 +49,7 @@ export function SettingsPage({ onNavigate }) {
         <a
           className="setting-row featured"
           href={HLD_DOC}
-          download="AstroLive-HLD.html"
+          download="AstroLive-HLD.pdf"
           aria-label="Download the HLD document"
         >
           <Info size={24} strokeWidth={1.8} />
