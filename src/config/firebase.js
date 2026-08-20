@@ -1,14 +1,3 @@
-// Firebase web config. These values are public by design — access is controlled
-// by firestore.rules, not by keeping the keys secret.
-// Create a project at https://console.firebase.google.com, enable Firestore and
-// Anonymous sign-in, then put the values in a .env file at the repo root:
-//
-//   VITE_FIREBASE_API_KEY=...
-//   VITE_FIREBASE_AUTH_DOMAIN=...
-//   VITE_FIREBASE_PROJECT_ID=...
-//   VITE_FIREBASE_APP_ID=...
-//
-// Vite inlines these at BUILD time, so they must be set before `npm run build`.
 
 const env = import.meta.env;
 
